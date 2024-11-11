@@ -5,35 +5,12 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useState, useEffect, Suspense } from 'react';
 import { FaSpotify, FaYoutube, FaSoundcloud, FaInstagram, FaHeart, FaPlay } from 'react-icons/fa';
-import { MdVerified, MdTrendingUp, MdLocationOn, MdEdit } from 'react-icons/md';
+import { MdTrendingUp, MdArrowForward } from 'react-icons/md';
 import { PiWaveform } from 'react-icons/pi';
 import type { Musician } from '@/app/api/musicians/route';
 import LoadingProfile from './loading';
-;
-
-// Image components with loading states
-const CoverImage = ({ src, alt }: { src: string; alt: string }) => (
-    <Suspense fallback={<div className="absolute inset-0 bg-[#242424] animate-pulse" />}>
-        <Image
-            src={src}
-            alt={alt}
-            fill
-            priority
-            className="object-cover transition-transform duration-700 group-hover:scale-105"
-        />
-    </Suspense>
-);
-
-const ProfileImage = ({ src, alt }: { src: string; alt: string }) => (
-    <Suspense fallback={<div className="absolute inset-0 bg-[#242424] animate-pulse" />}>
-        <Image
-            src={src}
-            alt={alt}
-            fill
-            className="object-cover"
-        />
-    </Suspense>
-);
+import Hero from '@/components/shared/Hero';
+import StatsCard from '@/components/shared/StatsCard';
 
 const LatestReleaseImage = ({ src, alt }: { src: string; alt: string }) => (
     <Suspense fallback={<div className="absolute inset-0 bg-[#2a2a2a] animate-pulse" />}>
@@ -50,89 +27,156 @@ export default function Profile() {
     const params = useParams();
     const profileId = params.id;
     const [musician, setMusician] = useState<Musician | null>(null);
+    const [similarMusicians, setSimilarMusicians] = useState<Musician[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
 
     useEffect(() => {
-        const fetchMusician = async () => {
+        const fetchData = async () => {
             try {
+                // Fetch the requested musician
                 const response = await fetch(`/api/musicians?id=${profileId}`);
+                if (!response.ok) {
+                    throw new Error('Musician not found');
+                }
                 const data = await response.json();
                 setMusician(data);
+
+                // If musician exists, fetch similar musicians
+                if (data) {
+                    const allMusiciansRes = await fetch('/api/musicians');
+                    const allMusicians = await allMusiciansRes.json();
+                    const similar = allMusicians
+                        .filter((m: Musician) =>
+                            m.id !== profileId &&
+                            (m.genre === data.genre || m.location === data.location)
+                        )
+                        .slice(0, 3);
+                    setSimilarMusicians(similar);
+                }
             } catch (error) {
                 console.error('Error fetching musician:', error);
+                setError(true);
+                // Fetch recommended musicians when profile is not found
+                const allMusiciansRes = await fetch('/api/musicians');
+                const allMusicians = await allMusiciansRes.json();
+                const recommended = allMusicians
+                    .filter((m: Musician) => m.id !== profileId)
+                    .sort(() => Math.random() - 0.5)
+                    .slice(0, 6);
+                setSimilarMusicians(recommended);
+            } finally {
+                setLoading(false);
             }
         };
 
         if (profileId) {
-            fetchMusician();
+            fetchData();
         }
     }, [profileId]);
 
-    if (!musician) {
+    if (loading) {
         return <LoadingProfile />;
     }
+
+    if (error || !musician) {
+        return (
+            <main className="flex-1 bg-gradient-to-b from-[#0f0f0f] via-[#1a1a1a] to-[#0f0f0f] min-h-screen p-4 sm:p-6 lg:p-8">
+                <div className="max-w-4xl mx-auto text-center py-20">
+                    <h1 className="text-4xl font-bold text-white mb-6">Profile Not Found</h1>
+                    <p className="text-zinc-400 mb-12">
+                        We couldn&apos;t find the musician you&apos;re looking for, but here are some other artists you might like:
+                    </p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {similarMusicians.map((musician) => (
+                            <Link
+                                key={musician.id}
+                                href={`/profile/${musician.id}`}
+                                className="group bg-zinc-900 rounded-xl overflow-hidden hover:bg-zinc-800/50 transition-all"
+                            >
+                                <div className="relative h-48 w-full">
+                                    <Image
+                                        src={musician.profileImage}
+                                        alt={musician.name}
+                                        fill
+                                        className="object-cover"
+                                    />
+                                </div>
+                                <div className="p-4">
+                                    <h3 className="text-lg font-semibold text-white group-hover:text-violet-400 transition-colors">
+                                        {musician.name}
+                                    </h3>
+                                    <p className="text-sm text-zinc-400">{musician.genre}</p>
+                                    <p className="text-sm text-zinc-500">{musician.location}</p>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+
+                    <div className="mt-12">
+                        <Link
+                            href="/discover"
+                            className="inline-flex items-center px-6 py-3 rounded-lg bg-violet-600 text-white font-medium hover:bg-violet-700 transition-all"
+                        >
+                            Discover More Artists
+                            <MdArrowForward className="ml-2 w-5 h-5" />
+                        </Link>
+                    </div>
+                </div>
+            </main>
+        );
+    }
+
+    const heroActions = [
+        {
+            icon: <MdTrendingUp className="w-4 h-4" />,
+            label: 'Edit Profile',
+            href: `/edit-profile/${musician.id}`,
+            primary: true
+        },
+        {
+            icon: null,
+            label: 'Share',
+            onClick: () => {/* Handle share */ }
+        }
+    ];
 
     return (
         <main className="flex-1 bg-gradient-to-b from-[#0f0f0f] via-[#1a1a1a] to-[#0f0f0f] min-h-screen p-4 sm:p-6 lg:p-8 overflow-y-auto">
             <div className="max-w-7xl mx-auto space-y-6">
-                {/* Header/Hero Section */}
-                <div className="relative h-[300px] lg:h-[400px] rounded-3xl overflow-hidden group">
-                    <CoverImage src={musician.coverImage} alt="Cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-8">
-                        <div className="flex items-end gap-6">
-                            <div className="relative w-32 h-32 lg:w-40 lg:h-40 rounded-2xl overflow-hidden border-4 border-[#1c1c1c]">
-                                <ProfileImage src={musician.profileImage} alt={musician.name} />
-                            </div>
-                            <div className="flex-1">
-                                <div className="flex items-center gap-3 mb-2">
-                                    <h1 className="text-4xl lg:text-5xl font-bold text-white">{musician.name}</h1>
-                                    {musician.isVerified && (
-                                        <MdVerified className="w-6 h-6 text-violet-400" />
-                                    )}
-                                </div>
-                                <div className="flex items-center gap-2 text-[#b3b3b3] mb-4">
-                                    <MdLocationOn className="w-5 h-5" />
-                                    <span>{musician.location}</span>
-                                    <span className="mx-2">•</span>
-                                    <span>{musician.genre}</span>
-                                </div>
-                                <div className="flex gap-3">
-                                    <Link
-                                        href={`/edit-profile/${musician.id}`}
-                                        className="px-6 py-2 bg-violet-600 hover:bg-violet-700 text-white font-medium rounded-full flex items-center gap-2 transition-all hover:scale-105"
-                                    >
-                                        <MdEdit className="w-4 h-4" />
-                                        Edit Profile
-                                    </Link>
-                                    <button className="px-6 py-2 bg-white/10 hover:bg-white/20 text-white font-medium rounded-full transition-all">
-                                        Share
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <Hero
+                    name={musician.name}
+                    isVerified={musician.isVerified}
+                    location={musician.location}
+                    subtitle={musician.genre}
+                    profileImage={musician.profileImage}
+                    coverImage={musician.coverImage}
+                    actions={heroActions}
+                />
 
                 {/* Main Grid Layout */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {/* Stats Cards - Full Width Row */}
-                    <div className="bg-gradient-to-br from-violet-600/20 to-fuchsia-600/20 rounded-2xl p-6 backdrop-blur-sm border border-white/5">
-                        <div className="flex items-center justify-between mb-3">
-                            <h3 className="text-sm font-medium text-[#b3b3b3]">Monthly Listeners</h3>
-                            <MdTrendingUp className="w-5 h-5 text-green-400" />
-                        </div>
-                        <p className="text-3xl font-bold text-white mb-1">{musician.stats.monthlyListeners}</p>
-                        <p className="text-sm text-green-400">+12.3% this month</p>
-                    </div>
+                    {/* Stats Cards */}
+                    <StatsCard
+                        title="Monthly Listeners"
+                        value={musician.stats.monthlyListeners}
+                        subtext="+12.3% this month"
+                        icon={<MdTrendingUp className="w-5 h-5 text-green-400" />}
+                        gradientFrom="violet-600/20"
+                        gradientTo="fuchsia-600/20"
+                        subtextColor="text-green-400"
+                    />
 
-                    <div className="bg-gradient-to-br from-pink-600/20 to-purple-600/20 rounded-2xl p-6 backdrop-blur-sm border border-white/5">
-                        <div className="flex items-center justify-between mb-3">
-                            <h3 className="text-sm font-medium text-[#b3b3b3]">Followers</h3>
-                            <FaHeart className="w-5 h-5 text-pink-400" />
-                        </div>
-                        <p className="text-3xl font-bold text-white mb-1">{musician.stats.followers}</p>
-                        <p className="text-sm text-pink-400">+856 this week</p>
-                    </div>
+                    <StatsCard
+                        title="Followers"
+                        value={musician.stats.followers}
+                        subtext="+856 this week"
+                        icon={<FaHeart className="w-5 h-5 text-pink-400" />}
+                        gradientFrom="pink-600/20"
+                        gradientTo="purple-600/20"
+                        subtextColor="text-pink-400"
+                    />
 
                     {/* Latest Release Card */}
                     {musician.latestRelease ? (
@@ -173,7 +217,7 @@ export default function Profile() {
                         </div>
                     )}
 
-                    {/* Featured Tracks and Connect Section - Side by Side */}
+                    {/* Featured Tracks */}
                     <div className="lg:col-span-2 bg-gradient-to-br from-[#242424] to-[#1c1c1c] rounded-2xl p-6 min-h-[250px]">
                         <h3 className="text-xl font-bold text-white mb-4">Featured Tracks</h3>
                         <div className="space-y-3">
@@ -195,7 +239,7 @@ export default function Profile() {
                         </div>
                     </div>
 
-                    {/* Connect Section - 2x2 Grid */}
+                    {/* Connect Section */}
                     <div className="lg:col-span-2 bg-gradient-to-br from-[#242424] to-[#1c1c1c] rounded-2xl p-6 min-h-[250px]">
                         <h3 className="text-xl font-bold text-white mb-4">Connect</h3>
                         <div className="grid grid-cols-2 gap-4 h-[calc(100%-60px)]">

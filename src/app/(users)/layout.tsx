@@ -1,17 +1,20 @@
 import { Suspense } from 'react';
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import "./globals.css";
-import Sidebar from "@/components/Sidebar";
+import "../globals.css";
+
+
+import Sidebar from '@/components/sidebar/Sidebar';
+import Footer from '@/components/shared/Footer';
 import LoadingProfile from './profile/[id]/loading';
 
 const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
+  src: "../fonts/GeistVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
 });
 const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
+  src: "../fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
   weight: "100 900",
 });
@@ -31,14 +34,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="flex flex-col lg:flex-row h-screen">
+        <div className="flex flex-col lg:flex-row min-h-screen">
           <div className="lg:fixed lg:inset-y-0 lg:w-72">
             <Sidebar />
           </div>
-          <div className="lg:pl-72 w-full">
+          <div className="lg:pl-72 w-full flex flex-col min-h-screen">
             <Suspense fallback={<LoadingProfile />}>
               {children}
             </Suspense>
+            <Footer />
           </div>
         </div>
       </body>
