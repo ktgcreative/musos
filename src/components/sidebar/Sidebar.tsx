@@ -25,8 +25,8 @@ type VenueStats = {
 };
 
 // Add this helper function at the top level, outside the component
-const groupByFirstLetter = (items: any[]) => {
-    return items.reduce((groups: { [key: string]: any[] }, item) => {
+const groupByFirstLetter = (items: (Musician | Venue)[]) => {
+    return items.reduce((groups: { [key: string]: (Musician | Venue)[] }, item) => {
         const firstLetter = item.name.charAt(0).toUpperCase();
         if (!groups[firstLetter]) {
             groups[firstLetter] = [];
