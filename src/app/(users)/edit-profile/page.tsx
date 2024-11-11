@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FaSpotify, FaYoutube, FaSoundcloud, FaInstagram, FaCloudUploadAlt, FaPalette } from 'react-icons/fa';
+import { FaSpotify, FaYoutube, FaSoundcloud, FaInstagram, FaCloudUploadAlt } from 'react-icons/fa';
 import { MdLocationOn, MdPerson, MdInfo, MdSettings, MdEvent, MdPalette } from 'react-icons/md';
 import { BiLink } from 'react-icons/bi';
 import { BsImages } from 'react-icons/bs';
@@ -77,7 +77,7 @@ export default function EditProfile() {
             setProfileData(prev => ({
                 ...prev,
                 [parent]: {
-                    ...prev[parent as keyof typeof prev],
+                    ...prev[parent as keyof typeof prev] as Record<string, string>,
                     [child]: value,
                 },
             }));
