@@ -95,14 +95,68 @@ export async function POST(request: NextRequest) {
                         },
                         reason: {
                             type: "string",
+                        },
+                        known_songs: {
+                            type: "array",
+                            items: {
+                                type: "object",
+                                properties: {
+                                    title: { type: "string" },
+                                    year: { type: "string" },
+                                    popularity: {
+                                        type: "string",
+                                        enum: ["underground", "local_hit", "regional_hit", "major_hit"]
+                                    }
+                                }
+                            },
+                            description: "Notable songs by the artist"
+                        },
+                        tags: {
+                            type: "array",
+                            items: { type: "string" },
+                            description: "Descriptive tags for the artist's style and brand"
+                        },
+                        performance_style: {
+                            type: "array",
+                            items: { type: "string" },
+                            description: "Characteristics of their live performances"
+                        },
+                        brand_identity: {
+                            type: "object",
+                            properties: {
+                                visual_aesthetic: { type: "string" },
+                                core_message: { type: "string" },
+                                audience_connection: {
+                                    type: "string",
+                                    enum: ["minimal", "developing", "strong", "exceptional"]
+                                }
+                            }
+                        },
+                        market_trends: {
+                            type: "array",
+                            items: {
+                                type: "object",
+                                properties: {
+                                    trend: { type: "string" },
+                                    relevance: {
+                                        type: "string",
+                                        enum: ["low", "medium", "high"]
+                                    }
+                                }
+                            }
                         }
                     },
                     required: [
                         "classification", "career_stage", "key_strengths", "market_position",
                         "genre_authenticity", "commercial_potential", "unique_selling_points",
-                        "development_areas", "target_audience", "collaboration_potential", "reason"
-                    ],
-                },
+                        "development_areas", "target_audience", "collaboration_potential", "reason",
+                        "known_songs",
+                        "tags",
+                        "performance_style",
+                        "brand_identity",
+                        "market_trends"
+                    ]
+                }
             }],
             function_call: { name: "classify_musician" }
         });
