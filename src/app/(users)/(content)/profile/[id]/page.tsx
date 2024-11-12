@@ -1,61 +1,37 @@
-'use client';
-
 import Image from 'next/image';
-import { useParams } from 'next/navigation';
-import { useState, useEffect, Suspense } from 'react';
-import { FaSpotify, FaYoutube, FaSoundcloud, FaInstagram, FaHeart, FaPlay } from 'react-icons/fa';
 import { MdTrendingUp } from 'react-icons/md';
+import { FaSpotify, FaYoutube, FaSoundcloud, FaInstagram, FaHeart, FaPlay } from 'react-icons/fa';
 import { PiWaveform } from 'react-icons/pi';
-import type { Musician } from '@/app/api/musicians/route';
-import LoadingProfile from './loading';
 import Hero from '@/components/shared/Hero';
 import ErrorWithRecommended from '@/components/shared/ErrorWithRecommended';
+import { Musician } from '@/app/api/musicians/route';
 
-const LatestReleaseImage = ({ src, alt }: { src: string; alt: string }) => (
-    <Suspense fallback={<div className="absolute inset-0 bg-[#2a2a2a] animate-pulse" />}>
-        <Image
-            src={src}
-            alt={alt}
-            fill
-            className="object-cover opacity-50 group-hover:scale-105 transition-transform duration-700"
-        />
-    </Suspense>
-);
+// Server-side data fetching
+async function getMusician(id: string) {
+    const res = await fetch(`http://localhost:3000/api/musicians?id=${id}`, {
+        next: { revalidate: 3600 } // Revalidate every hour
+    });
 
-export default function Profile() {
-    const params = useParams();
-    const profileId = params.id;
-    const [musician, setMusician] = useState<Musician | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch(`/api/musicians?id=${profileId}`);
-                if (!response.ok) {
-                    setError(true);
-                    return;
-                }
-                const data = await response.json();
-                setMusician(data);
-            } catch {
-                setError(true);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        if (profileId) {
-            fetchData();
-        }
-    }, [profileId]);
-
-    if (loading) {
-        return <LoadingProfile />;
+    if (!res.ok) {
+        throw new Error('Failed to fetch musician data');
     }
 
-    if (error || !musician) {
+    return res.json();
+}
+
+const LatestReleaseImage = ({ src, alt }: { src: string; alt: string }) => (
+    <Image
+        src={src}
+        alt={alt}
+        fill
+        className="object-cover opacity-50 group-hover:scale-105 transition-transform duration-700"
+    />
+);
+
+export default async function Profile({ params }: { params: { id: string } }) {
+    const musician = await getMusician(params.id);
+
+    if (!musician) {
         return <ErrorWithRecommended />;
     }
 
@@ -69,7 +45,6 @@ export default function Profile() {
         {
             icon: null,
             label: 'Share',
-            onClick: () => {/* Handle share */ }
         }
     ];
 
@@ -150,7 +125,7 @@ export default function Profile() {
                     <div className="lg:col-span-2 bg-gradient-to-br from-[#242424] to-[#1c1c1c] rounded-2xl p-6 min-h-[250px] border border-white/5">
                         <h3 className="text-xl font-bold text-white mb-4">Featured Tracks</h3>
                         <div className="space-y-3">
-                            {musician.featuredTracks.map((track, index) => (
+                            {musician.featuredTracks.map((track: Musician['featuredTracks'][0], index: number) => (
                                 <div key={track.name}
                                     className="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition-colors group cursor-pointer"
                                 >

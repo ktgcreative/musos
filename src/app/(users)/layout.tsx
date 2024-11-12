@@ -6,7 +6,7 @@ import "../globals.css";
 
 import Sidebar from '@/components/sidebar/Sidebar';
 import Footer from '@/components/shared/Footer';
-import LoadingProfile from './profile/[id]/loading';
+import LoadingProfile from './(content)/profile/[id]/loading';
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",

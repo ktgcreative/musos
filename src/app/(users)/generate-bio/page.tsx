@@ -1,19 +1,40 @@
 'use client';
 
 import { useState } from 'react';
-import { MdAutoAwesome, MdPerson, MdMusicNote, MdTheaters, MdQuestionAnswer } from 'react-icons/md';
+import { MdAutoAwesome, MdPerson, MdMusicNote, MdTheaters, MdQuestionAnswer, MdAnalytics } from 'react-icons/md';
+
+interface Classification {
+    classification: string;
+    career_stage: string;
+    key_strengths: string[];
+    market_position: {
+        local_scene: string;
+        broader_market: string;
+    };
+    commercial_potential: string;
+    genre_authenticity: number;
+    unique_selling_points: string[];
+    development_areas: string[];
+    target_audience: string[];
+    collaboration_potential: string[];
+    reason: string;
+}
 
 export default function GenerateBioPage() {
     const [formData, setFormData] = useState({
-        stageName: '',
+        stageName: 'Happy The Singing Dog',
         realName: '',
         musicianName: '',
-        genre: '',
-        instruments: '',
-        location: '',
+        genre: 'Busking, Acoustic,pop',
+        instruments: 'Guitar, Singing Dog',
+        location: 'Queenstown, New Zealand',
         venues: '',
-        yearsActive: '',
-        achievements: ''
+        yearsActive: '10+',
+        achievements: '',
+        notablePerformances: '',
+        socialMedia: '',
+        influences: '',
+        education: ''
     });
     const [bio, setBio] = useState('');
     const [searchPrompt, setSearchPrompt] = useState('');
@@ -21,6 +42,7 @@ export default function GenerateBioPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [relatedQuestions, setRelatedQuestions] = useState<string[]>([]);
+    const [classification, setClassification] = useState<Classification | null>(null);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -46,6 +68,7 @@ export default function GenerateBioPage() {
             setSearchPrompt(data.searchPrompt);
             setDetailedPrompt(data.detailedPrompt);
             setRelatedQuestions(data.relatedQuestions || []);
+            setClassification(data.classification);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Something went wrong');
         } finally {
@@ -199,6 +222,62 @@ export default function GenerateBioPage() {
                                         rows={3}
                                     />
                                 </div>
+                                <div>
+                                    <label htmlFor="notablePerformances" className="block text-sm font-medium text-[#b3b3b3] mb-2">
+                                        Notable Performances
+                                    </label>
+                                    <textarea
+                                        name="notablePerformances"
+                                        id="notablePerformances"
+                                        value={formData.notablePerformances}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-3 bg-[#2a2a2a] text-white rounded-xl border border-white/10 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 focus:outline-none transition-all"
+                                        placeholder="Significant shows, festivals, or events you've performed at"
+                                        rows={3}
+                                    />
+                                </div>
+                                <div>
+                                    <label htmlFor="influences" className="block text-sm font-medium text-[#b3b3b3] mb-2">
+                                        Musical Influences
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="influences"
+                                        id="influences"
+                                        value={formData.influences}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-3 bg-[#2a2a2a] text-white rounded-xl border border-white/10 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 focus:outline-none transition-all"
+                                        placeholder="Artists who have influenced your style"
+                                    />
+                                </div>
+                                <div>
+                                    <label htmlFor="socialMedia" className="block text-sm font-medium text-[#b3b3b3] mb-2">
+                                        Social Media Presence
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="socialMedia"
+                                        id="socialMedia"
+                                        value={formData.socialMedia}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-3 bg-[#2a2a2a] text-white rounded-xl border border-white/10 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 focus:outline-none transition-all"
+                                        placeholder="Instagram, TikTok, YouTube handles"
+                                    />
+                                </div>
+                                <div>
+                                    <label htmlFor="education" className="block text-sm font-medium text-[#b3b3b3] mb-2">
+                                        Musical Education
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="education"
+                                        id="education"
+                                        value={formData.education}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-3 bg-[#2a2a2a] text-white rounded-xl border border-white/10 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 focus:outline-none transition-all"
+                                        placeholder="Formal training, certifications, or self-taught experience"
+                                    />
+                                </div>
                             </div>
                         </div>
 
@@ -237,6 +316,124 @@ export default function GenerateBioPage() {
                                     {bio}
                                 </p>
                             </div>
+
+                            {classification && (
+                                <div className="p-6 bg-[#2a2a2a] rounded-xl border border-white/10">
+                                    <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                                        <MdAnalytics className="w-5 h-5 text-violet-400" />
+                                        Artist Analysis
+                                    </h2>
+                                    <div className="space-y-6">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="p-4 bg-[#1a1a1a] rounded-lg">
+                                                <h3 className="text-violet-400 font-medium mb-2">Classification</h3>
+                                                <p className="text-white capitalize">{classification.classification}</p>
+                                            </div>
+                                            <div className="p-4 bg-[#1a1a1a] rounded-lg">
+                                                <h3 className="text-violet-400 font-medium mb-2">Career Stage</h3>
+                                                <p className="text-white capitalize">{classification.career_stage.replace(/_/g, ' ')}</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="p-4 bg-[#1a1a1a] rounded-lg">
+                                            <h3 className="text-violet-400 font-medium mb-2">Key Strengths</h3>
+                                            <div className="flex flex-wrap gap-2">
+                                                {classification.key_strengths.map((strength: string, index: number) => (
+                                                    <span
+                                                        key={index}
+                                                        className="px-3 py-1 bg-violet-500/20 text-violet-300 rounded-full text-sm"
+                                                    >
+                                                        {strength.replace(/_/g, ' ')}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="p-4 bg-[#1a1a1a] rounded-lg">
+                                                <h3 className="text-violet-400 font-medium mb-2">Market Position</h3>
+                                                <div className="space-y-2">
+                                                    <p className="text-white">
+                                                        Local Scene: <span className="capitalize">{classification.market_position.local_scene}</span>
+                                                    </p>
+                                                    <p className="text-white">
+                                                        Broader Market: <span className="capitalize">{classification.market_position.broader_market}</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="p-4 bg-[#1a1a1a] rounded-lg">
+                                                <h3 className="text-violet-400 font-medium mb-2">Commercial Potential</h3>
+                                                <p className="text-white capitalize">{classification.commercial_potential}</p>
+                                                <div className="mt-2">
+                                                    <div className="h-2 bg-[#2a2a2a] rounded-full overflow-hidden">
+                                                        <div
+                                                            className="h-full bg-gradient-to-r from-violet-500 to-fuchsia-500"
+                                                            style={{
+                                                                width: `${classification.genre_authenticity * 100}%`
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <p className="text-sm text-[#b3b3b3] mt-1">
+                                                        Genre Authenticity: {Math.round(classification.genre_authenticity * 100)}%
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="p-4 bg-[#1a1a1a] rounded-lg">
+                                                <h3 className="text-violet-400 font-medium mb-2">Unique Selling Points</h3>
+                                                <ul className="list-disc list-inside space-y-1">
+                                                    {classification.unique_selling_points.map((point: string, index: number) => (
+                                                        <li key={index} className="text-[#b3b3b3]">{point}</li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                            <div className="p-4 bg-[#1a1a1a] rounded-lg">
+                                                <h3 className="text-violet-400 font-medium mb-2">Development Areas</h3>
+                                                <ul className="list-disc list-inside space-y-1">
+                                                    {classification.development_areas.map((area: string, index: number) => (
+                                                        <li key={index} className="text-[#b3b3b3]">{area}</li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                        <div className="p-4 bg-[#1a1a1a] rounded-lg">
+                                            <h3 className="text-violet-400 font-medium mb-2">Target Audience</h3>
+                                            <div className="flex flex-wrap gap-2">
+                                                {classification.target_audience.map((audience: string, index: number) => (
+                                                    <span
+                                                        key={index}
+                                                        className="px-3 py-1 bg-fuchsia-500/20 text-fuchsia-300 rounded-full text-sm"
+                                                    >
+                                                        {audience}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        <div className="p-4 bg-[#1a1a1a] rounded-lg">
+                                            <h3 className="text-violet-400 font-medium mb-2">Collaboration Potential</h3>
+                                            <div className="flex flex-wrap gap-2">
+                                                {classification.collaboration_potential.map((collab: string, index: number) => (
+                                                    <span
+                                                        key={index}
+                                                        className="px-3 py-1 bg-violet-500/20 text-violet-300 rounded-full text-sm"
+                                                    >
+                                                        {collab}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        <div className="p-4 bg-[#1a1a1a] rounded-lg">
+                                            <h3 className="text-violet-400 font-medium mb-2">Analysis Summary</h3>
+                                            <p className="text-[#b3b3b3] leading-relaxed">{classification.reason}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
 
                             {relatedQuestions.length > 0 && (
                                 <div className="p-6 bg-[#2a2a2a] rounded-xl border border-white/10">

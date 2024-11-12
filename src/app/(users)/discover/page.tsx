@@ -1,59 +1,42 @@
-'use client';
-
-import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { MdVerified, MdLocationOn, MdPeople, MdMusicNote, MdSearch } from 'react-icons/md';
+import { MdVerified, MdLocationOn, MdPeople, MdMusicNote } from 'react-icons/md';
 import type { Musician } from '@/app/api/musicians/route';
 import type { Venue } from '@/app/api/venues/route';
 
-export default function Discover() {
-    const [musicians, setMusicians] = useState<Musician[]>([]);
-    const [venues, setVenues] = useState<Venue[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [searchTerm, setSearchTerm] = useState('');
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [musiciansRes, venuesRes] = await Promise.all([
-                    fetch('/api/musicians'),
-                    fetch('/api/venues')
-                ]);
-                const musiciansData = await musiciansRes.json();
-                const venuesData = await venuesRes.json();
-                setMusicians(musiciansData);
-                setVenues(venuesData);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
 
-        fetchData();
-    }, []);
+// Add data fetching functions
+async function getMusicians() {
+    const res = await fetch('http://localhost:3000/api/musicians', {
+        next: { revalidate: 3600 } // Revalidate every hour
+    });
 
-    const filteredMusicians = musicians.filter(m =>
-        m.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        m.genre.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    const filteredVenues = venues.filter(v =>
-        v.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        v.type.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center min-h-screen bg-black">
-                <div className="w-16 h-16 relative animate-pulse">
-                    <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-fuchsia-600 rounded-full animate-ping" />
-                    <div className="absolute inset-2 bg-gradient-to-r from-violet-600 to-fuchsia-600 rounded-full animate-pulse" />
-                </div>
-            </div>
-        );
+    if (!res.ok) {
+        throw new Error('Failed to fetch musicians');
     }
+
+    return res.json();
+}
+
+async function getVenues() {
+    const res = await fetch('http://localhost:3000/api/venues', {
+        next: { revalidate: 3600 } // Revalidate every hour
+    });
+
+    if (!res.ok) {
+        throw new Error('Failed to fetch venues');
+    }
+
+    return res.json();
+}
+
+export default async function Discover() {
+    // Fetch data in parallel
+    const [musicians, venues] = await Promise.all([
+        getMusicians(),
+        getVenues()
+    ]);
 
     return (
         <main className="flex-1 bg-black min-h-screen">
@@ -68,21 +51,6 @@ export default function Discover() {
                         <h1 className="text-4xl font-bold text-white">Discover</h1>
                         <p className="text-zinc-400">Find your next performance opportunity</p>
                     </div>
-                    <div className="relative w-full sm:w-96">
-                        <div className="relative group">
-                            <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-fuchsia-600 rounded-xl blur group-hover:blur-md transition-all" />
-                            <div className="relative bg-zinc-900/90 backdrop-blur-sm rounded-xl">
-                                <input
-                                    type="search"
-                                    placeholder="Search musicians and venues..."
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="w-full px-4 py-3 pl-12 bg-transparent text-white placeholder-zinc-400 border-none rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500 transition-all"
-                                />
-                                <MdSearch className="absolute left-4 top-3.5 h-5 w-5 text-zinc-400" />
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 {/* Musicians Section */}
@@ -94,7 +62,7 @@ export default function Discover() {
                             </div>
                             <div>
                                 <h2 className="text-2xl font-bold text-white">Musicians</h2>
-                                <p className="text-sm text-zinc-400">{filteredMusicians.length} artists</p>
+                                <p className="text-sm text-zinc-400">{musicians.length} artists</p>
                             </div>
                         </div>
                         <Link
@@ -105,7 +73,7 @@ export default function Discover() {
                         </Link>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {filteredMusicians.slice(0, 8).map(musician => (
+                        {musicians.slice(0, 8).map((musician: Musician) => (
                             <Link
                                 href={`/profile/${musician.id}`}
                                 key={musician.id}
@@ -154,7 +122,7 @@ export default function Discover() {
                             </div>
                             <div>
                                 <h2 className="text-2xl font-bold text-white">Venues</h2>
-                                <p className="text-sm text-zinc-400">{filteredVenues.length} venues</p>
+                                <p className="text-sm text-zinc-400">{venues.length} venues</p>
                             </div>
                         </div>
                         <Link
@@ -165,7 +133,7 @@ export default function Discover() {
                         </Link>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {filteredVenues.slice(0, 8).map(venue => (
+                        {venues.slice(0, 8).map((venue: Venue) => (
                             <Link
                                 href={`/venue/${venue.id}`}
                                 key={venue.id}
