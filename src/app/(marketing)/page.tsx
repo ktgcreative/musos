@@ -1,5 +1,6 @@
 import Navigation from '@/components/marketing/home/Navigation';
-import MarketingHero from '@/components/marketing/home/Hero';
+// import Hero from '@/components/marketing/home/Hero';
+import { PlayfulHeroSection } from '@/components/marketing/home/MarketingHero';
 import Pricing from '@/components/marketing/home/Pricing';
 
 export default function Home() {
@@ -7,7 +8,8 @@ export default function Home() {
     <main className="flex-1">
       <div className="bg-black min-h-screen">
         <Navigation />
-        <MarketingHero />
+        {/* <Hero /> */}
+        <PlayfulHeroSection />
         <Pricing />
       </div>
     </main>
