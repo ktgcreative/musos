@@ -6,37 +6,47 @@ import type { Venue } from '@/app/api/venues/route';
 
 
 
-// Add data fetching functions
+// Update the data fetching functions
 async function getMusicians() {
-    const res = await fetch('http://localhost:3000/api/musicians', {
-        next: { revalidate: 3600 } // Revalidate every hour
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/api/musicians`, {
+        next: { revalidate: 3600 }
     });
 
     if (!res.ok) {
-        throw new Error('Failed to fetch musicians');
+        console.error('Failed to fetch musicians');
+        return { musicians: [] };
     }
 
     return res.json();
 }
 
 async function getVenues() {
-    const res = await fetch('http://localhost:3000/api/venues', {
-        next: { revalidate: 3600 } // Revalidate every hour
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/api/venues`, {
+        next: { revalidate: 3600 }
     });
 
     if (!res.ok) {
-        throw new Error('Failed to fetch venues');
+        console.error('Failed to fetch venues');
+        return { venues: [] };
     }
 
     return res.json();
 }
 
 export default async function Discover() {
-    // Fetch data in parallel
-    const [musicians, venues] = await Promise.all([
-        getMusicians(),
-        getVenues()
-    ]);
+    // Add error handling for the Promise.all
+    let musicians = [];
+    let venues = [];
+
+    try {
+        [musicians, venues] = await Promise.all([
+            getMusicians(),
+            getVenues()
+        ]);
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        // Continue with empty arrays if fetch fails
+    }
 
     return (
         <main className="flex-1 bg-black min-h-screen">
