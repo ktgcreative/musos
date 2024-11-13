@@ -464,7 +464,7 @@ export default function GenerateBioPage() {
                                                 Collaboration Potential
                                             </h3>
                                             <div className="flex flex-wrap gap-2">
-                                                {(typeof classification.collaboration_potential === 'string' ? [classification.collaboration_potential] : classification.collaboration_potential).map((collab: string, index: number) => (
+                                                {(Array.isArray(classification.collaboration_potential) ? classification.collaboration_potential : [classification.collaboration_potential]).map((collab: string, index: number) => (
                                                     <span
                                                         key={index}
                                                         className="px-3 py-1 bg-violet-500/20 text-violet-300 rounded-full text-sm"

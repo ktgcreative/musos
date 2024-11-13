@@ -8,8 +8,9 @@ import { Musician } from '@/app/api/musicians/route';
 
 // Server-side data fetching
 async function getMusician(id: string) {
-    const res = await fetch(`http://localhost:3000/api/musicians?id=${id}`, {
-        next: { revalidate: 3600 } // Revalidate every hour
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+    const res = await fetch(`${baseUrl}/api/musicians?id=${id}`, {
+        next: { revalidate: 3600 }
     });
 
     if (!res.ok) {
@@ -28,7 +29,11 @@ const LatestReleaseImage = ({ src, alt }: { src: string; alt: string }) => (
     />
 );
 
-export default async function Profile({ params }: { params: { id: string } }) {
+type Props = {
+    params: { id: string }
+}
+
+export default async function Profile({ params }: Props) {
     const musician = await getMusician(params.id);
 
     if (!musician) {
