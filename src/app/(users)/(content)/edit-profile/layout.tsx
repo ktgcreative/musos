@@ -24,7 +24,7 @@ export default function EditProfileLayout({ children }: Props) {
     };
 
     return (
-        <main className="flex-1 bg-gradient-to-b from-[#0f0f0f] via-[#1a1a1a] to-[#0f0f0f] min-h-screen p-4 sm:p-6 lg:p-8">
+        <main className="flex-1 ">
             <div className="max-w-4xl mx-auto">
                 <div className={`bg-gradient-to-b ${currentTheme.gradients.secondary} rounded-2xl p-8 mb-8 border border-white/5`}>
                     <h1 className="text-4xl font-bold text-white mb-2">Customize Your Profile</h1>

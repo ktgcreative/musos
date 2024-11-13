@@ -49,12 +49,9 @@ export default async function Discover() {
     }
 
     return (
-        <main className="flex-1 bg-black min-h-screen">
-            {/* Background Effects */}
-            <div className="fixed inset-0 ml-72 bg-gradient-to-br from-black via-black/95 to-transparent" />
-            <div className="fixed inset-0 ml-72 bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10 animate-gradient-xy" />
+        <div className="relative min-h-screen">
 
-            <div className="relative z-10 max-w-7xl mx-auto space-y-8 px-4 sm:px-6 lg:px-8 py-8">
+            <div className="relative z-10 p-10 space-y-8">
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between">
                     <div className="space-y-1">
@@ -180,6 +177,6 @@ export default async function Discover() {
                     </div>
                 </div>
             </div>
-        </main>
+        </div>
     );
 } 

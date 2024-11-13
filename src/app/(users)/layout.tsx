@@ -2,11 +2,8 @@ import { Suspense } from 'react';
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "../globals.css";
-
-
-import Sidebar from '@/components/sidebar/Sidebar';
-import Footer from '@/components/shared/Footer';
 import LoadingProfile from './(content)/profile/[id]/loading';
+import SidebarFull from '@/components/sidebar/tailwind/sidebar';
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -31,20 +28,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <div className="flex flex-col lg:flex-row min-h-screen">
-          <div className="lg:fixed lg:inset-y-0 lg:w-72">
-            <Sidebar />
-          </div>
-          <div className="lg:pl-72 w-full flex flex-col min-h-screen">
-            <Suspense fallback={<LoadingProfile />}>
-              {children}
-            </Suspense>
-            <Footer />
-          </div>
-        </div>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <SidebarFull>
+
+          <Suspense fallback={<LoadingProfile />}>
+
+            {/* Background Effects */}
+            <div className="absolute -z-10 inset-0 bg-gradient-to-br from-black via-black/95 to-transparent" />
+            <div className="absolute -z-10 inset-0 bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10 animate-gradient-xy" />
+            {children}
+
+          </Suspense>
+        </SidebarFull>
       </body>
     </html>
   );

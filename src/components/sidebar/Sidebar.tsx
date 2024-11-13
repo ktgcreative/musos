@@ -1,53 +1,11 @@
 "use client";
-import { useState, useEffect } from 'react';
-import type { Musician } from '@/app/api/musicians/route';
-import type { Venue } from '@/app/api/venues/route';
-import SearchInput from './SearchInput';
 import Link from 'next/link';
+import SearchInput from './SearchInput';
 import SidebarList from './SidebarList';
+import { useState } from 'react';
 
 export default function Sidebar() {
     const [searchTerm, setSearchTerm] = useState('');
-    const [musicians, setMusicians] = useState<Musician[]>([]);
-    const [venues, setVenues] = useState<Venue[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [musiciansRes, venuesRes] = await Promise.all([
-                    fetch('/api/musicians'),
-                    fetch('/api/venues')
-                ]);
-                const [musiciansData, venuesData] = await Promise.all([
-                    musiciansRes.json(),
-                    venuesRes.json()
-                ]);
-                setMusicians(musiciansData);
-                setVenues(venuesData);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, []);
-
-    const filteredItems = [...musicians, ...venues].filter(item =>
-        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        ('genre' in item && item.genre.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        ('type' in item && item.type.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
-
-    if (loading) {
-        return (
-            <aside className="fixed top-0 left-0 w-72 h-screen bg-[#121212] flex items-center justify-center z-50">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1ed760]" />
-            </aside>
-        );
-    }
 
     return (
         <aside className="fixed top-0 left-0 w-72 h-screen bg-black flex flex-col z-50">
@@ -60,9 +18,6 @@ export default function Sidebar() {
                         MUSOS
                     </h2>
                 </Link>
-                <p className="text-sm text-zinc-400 mt-1">
-                    {filteredItems.length} items found
-                </p>
             </div>
 
             <div className="relative z-10 p-4">
@@ -79,7 +34,7 @@ export default function Sidebar() {
             </div>
 
             <div className="relative z-10 flex-1 overflow-y-auto custom-scrollbar">
-                <SidebarList items={filteredItems} />
+                <SidebarList searchTerm={searchTerm} />
             </div>
         </aside>
     );

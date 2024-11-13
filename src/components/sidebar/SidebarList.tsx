@@ -1,11 +1,11 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Musician } from '@/app/api/musicians/route';
 import { Venue } from '@/app/api/venues/route';
 import ListItem from './ListItem';
 
 type Props = {
-    items: (Musician | Venue)[];
+    searchTerm: string;
 };
 
 type FilterCategory = 'musicians' | 'venues' | 'all';
@@ -27,21 +27,63 @@ function isVenueStats(stats: any): stats is { rating: string } {
     return 'rating' in stats;
 }
 
-export default function SidebarList({ items }: Props) {
-    // State
+export default function SidebarList({ searchTerm }: Props) {
+    const [loading, setLoading] = useState(true);
+    const [musicians, setMusicians] = useState<Musician[]>([]);
+    const [venues, setVenues] = useState<Venue[]>([]);
     const [filterCategory, setFilterCategory] = useState<FilterCategory>('all');
     const [sortBy, setSortBy] = useState<SortOption>('name');
     const [selectedLocation, setSelectedLocation] = useState<string>('all');
     const [selectedType, setSelectedType] = useState<string>('all');
 
-    // Derived data
-    const locations = Array.from(new Set(items.map(item => item.location))).sort();
-    const types = Array.from(new Set(items.map(item =>
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [musiciansRes, venuesRes] = await Promise.all([
+                    fetch('/api/musicians'),
+                    fetch('/api/venues')
+                ]);
+                const [musiciansData, venuesData] = await Promise.all([
+                    musiciansRes.json(),
+                    venuesRes.json()
+                ]);
+                setMusicians(musiciansData);
+                setVenues(venuesData);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-full">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#1ed760]" />
+            </div>
+        );
+    }
+
+    const allItems = [...musicians, ...venues];
+
+    // Apply search filter
+    const searchedItems = allItems.filter(item =>
+        item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        ('genre' in item && item.genre.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        ('type' in item && item.type.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+
+    // Derived data - use allItems instead of searchedItems for complete lists
+    const locations = Array.from(new Set(allItems.map(item => item.location))).sort();
+    const types = Array.from(new Set(allItems.map(item =>
         'genre' in item ? item.genre : item.type
     ))).sort();
 
     // Filtering
-    const filteredItems = items.filter(item => {
+    const filteredItems = searchedItems.filter(item => {
         const matchesCategory = filterCategory === 'all' ||
             (filterCategory === 'musicians' && 'genre' in item) ||
             (filterCategory === 'venues' && 'type' in item);
@@ -83,8 +125,8 @@ export default function SidebarList({ items }: Props) {
                     key={category}
                     onClick={() => setFilterCategory(category)}
                     className={`px-4 py-1.5 text-xs rounded-full transition-all ${filterCategory === category
-                            ? 'bg-[#1ed760] text-black font-bold hover:bg-[#1db954]'
-                            : 'bg-[#242424] text-[#b3b3b3] hover:bg-[#2a2a2a] hover:text-white'
+                        ? 'bg-[#1ed760] text-black font-bold hover:bg-[#1db954]'
+                        : 'bg-[#242424] text-[#b3b3b3] hover:bg-[#2a2a2a] hover:text-white'
                         }`}
                 >
                     {category.charAt(0).toUpperCase() + category.slice(1)}
@@ -132,6 +174,9 @@ export default function SidebarList({ items }: Props) {
 
     return (
         <div className="h-full">
+            <div className="px-6 py-2 text-sm text-zinc-400">
+                {searchedItems.length} items found
+            </div>
             {/* Sticky Filters Section */}
             <div className="sticky top-0 z-30 bg-black/95 backdrop-blur-sm border-b border-white/5">
                 <div className="space-y-2 px-4 py-2">
