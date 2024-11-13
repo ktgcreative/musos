@@ -87,7 +87,7 @@ Find information about their performances, music style, and presence in the ${lo
             perplexityOptions
         );
 
-        const perplexityData = await perplexityResponse.json();
+        const perplexityData = await perplexityResponse?.json();
 
         // Use retry logic for GPT classification
         const gptResponse = await fetchWithRetry(
@@ -101,7 +101,7 @@ Find information about their performances, music style, and presence in the ${lo
             }
         );
 
-        const gptData = await gptResponse.json();
+        const gptData = await gptResponse?.json();
 
         return NextResponse.json({
             searchPrompt,
