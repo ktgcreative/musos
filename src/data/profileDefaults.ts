@@ -1,4 +1,5 @@
-import { ProfileData } from '../app/(users)/edit-profile/(components)/users/types';
+import { ProfileData } from "@/app/(users)/(content)/edit-profile/(components)/users/types";
+
 
 export const DEFAULT_PROFILE_DATA: ProfileData = {
     name: '',
