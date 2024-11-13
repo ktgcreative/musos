@@ -6,13 +6,16 @@ const client = new OpenAI({
 });
 
 export async function POST(request: NextRequest) {
-    const { bioText } = await request.json();
-
-    if (!bioText) {
-        return NextResponse.json({ error: "Bio text is required" }, { status: 400 });
-    }
-
     try {
+        const body = await request.json();
+
+        if (!body.bioText) {
+            return NextResponse.json(
+                { error: "Bio text is required" },
+                { status: 400 }
+            );
+        }
+
         const response = await client.chat.completions.create({
             model: "gpt-4o-mini",
             messages: [
@@ -25,7 +28,7 @@ export async function POST(request: NextRequest) {
                     4. Unique characteristics and potential
                     5. Target audience and collaboration opportunities`
                 },
-                { role: "user", content: bioText }
+                { role: "user", content: body.bioText }
             ],
             functions: [{
                 name: "classify_musician",
@@ -162,16 +165,27 @@ export async function POST(request: NextRequest) {
         });
 
         const functionCall = response.choices[0].message.function_call;
-        if (!functionCall) {
-            throw new Error("No classification received from the model");
+        if (!functionCall || !functionCall.arguments) {
+            throw new Error("Invalid response from OpenAI");
         }
 
-        const classification = JSON.parse(functionCall.arguments);
-        return NextResponse.json({ classification });
+        try {
+            const classification = JSON.parse(functionCall.arguments);
+            return NextResponse.json({ classification });
+        } catch (parseError) {
+            console.error('Error parsing OpenAI response:', parseError);
+            return NextResponse.json(
+                { error: "Failed to parse classification data" },
+                { status: 500 }
+            );
+        }
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error in classify-musician:', error);
         return NextResponse.json(
-            { error: "An error occurred while processing your request" },
+            {
+                error: "Failed to classify musician",
+                details: error instanceof Error ? error.message : "Unknown error"
+            },
             { status: 500 }
         );
     }

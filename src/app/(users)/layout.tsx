@@ -30,14 +30,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <SidebarFull>
-
           <Suspense fallback={<LoadingProfile />}>
-
             {/* Background Effects */}
             <div className="absolute -z-10 inset-0 bg-gradient-to-br from-black via-black/95 to-transparent" />
             <div className="absolute -z-10 inset-0 bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10 animate-gradient-xy" />
             {children}
-
           </Suspense>
         </SidebarFull>
       </body>

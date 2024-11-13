@@ -87,7 +87,12 @@ export default function GenerateBioPage() {
             setRelatedQuestions(data.relatedQuestions || []);
             setClassification(data.classification);
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'Something went wrong');
+            const errorMessage = err instanceof Error ?
+                err.message :
+                typeof err === 'object' && err && 'details' in err ?
+                    String(err.details) :
+                    'Something went wrong';
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }
@@ -101,7 +106,7 @@ export default function GenerateBioPage() {
     };
 
     return (
-        <main className="flex-1 bg-gradient-to-b from-[#0f0f0f] via-[#1a1a1a] to-[#0f0f0f] min-h-screen p-4 sm:p-6 lg:p-8 overflow-y-auto">
+        <main className="flex-1 min-h-screen p-4 sm:p-6 lg:p-8 overflow-y-auto">
             <div className="max-w-4xl mx-auto">
                 {/* Header Section */}
                 <div className="bg-gradient-to-br from-violet-600/20 to-fuchsia-600/20 rounded-2xl p-8 mb-8 border border-white/5">

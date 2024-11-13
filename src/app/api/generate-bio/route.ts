@@ -29,6 +29,8 @@ async function fetchWithRetry(url: string, options: RequestInit, maxRetries = 3)
 
 export async function POST(request: Request) {
     try {
+        const body = await request.json();
+
         const {
             stageName,
             realName,
@@ -37,11 +39,13 @@ export async function POST(request: Request) {
             genre,
             venues,
             achievements,
-        } = await request.json();
+        } = body;
 
-        // Validate API key
         if (!PERPLEXITY_API_KEY) {
-            throw new Error('Perplexity API key is not configured');
+            return NextResponse.json(
+                { error: "API key not configured" },
+                { status: 500 }
+            );
         }
 
         // Create prompts...
@@ -81,46 +85,72 @@ Find information about their performances, music style, and presence in the ${lo
             })
         };
 
-        // Use retry logic for Perplexity API call
-        const perplexityResponse = await fetchWithRetry(
-            'https://api.perplexity.ai/chat/completions',
-            perplexityOptions
-        );
+        try {
+            const perplexityResponse = await fetchWithRetry(
+                'https://api.perplexity.ai/chat/completions',
+                perplexityOptions
+            );
 
-        const perplexityData = await perplexityResponse?.json();
-
-        // Use retry logic for GPT classification
-        const gptResponse = await fetchWithRetry(
-            `${request.url.split('/api/')[0]}/api/classify-musician`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ bioText: perplexityData.choices[0].message.content }),
+            if (!perplexityResponse) {
+                throw new Error("No response from Perplexity API");
             }
-        );
 
-        const gptData = await gptResponse?.json();
+            const perplexityData = await perplexityResponse.json();
 
-        return NextResponse.json({
-            searchPrompt,
-            detailedPrompt,
-            bio: perplexityData.choices[0].message.content,
-            relatedQuestions: perplexityData.related_questions || [],
-            classification: gptData.classification,
-            timestamp: new Date().toISOString()
-        });
+            if (!perplexityData || !perplexityData.choices?.[0]?.message?.content) {
+                throw new Error("Invalid response from Perplexity API");
+            }
+
+            const gptResponse = await fetchWithRetry(
+                `${request.url.split('/api/')[0]}/api/classify-musician`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        bioText: perplexityData.choices[0].message.content
+                    }),
+                }
+            );
+
+            if (!gptResponse) {
+                throw new Error("No response from classification API");
+            }
+
+            const gptData = await gptResponse.json();
+
+            if (!gptData || !gptData.classification) {
+                throw new Error("Invalid response from classification API");
+            }
+
+            return NextResponse.json({
+                searchPrompt,
+                detailedPrompt,
+                bio: perplexityData.choices[0].message.content,
+                relatedQuestions: perplexityData.related_questions || [],
+                classification: gptData.classification,
+                timestamp: new Date().toISOString()
+            });
+
+        } catch (apiError) {
+            console.error('API Error:', apiError);
+            return NextResponse.json(
+                {
+                    error: "API request failed",
+                    details: apiError instanceof Error ? apiError.message : "Unknown API error"
+                },
+                { status: 500 }
+            );
+        }
+
     } catch (error) {
-        console.error('Error generating bio:', error);
-
-        // More detailed error response
-        const errorMessage = error instanceof Error
-            ? `Failed to generate biography: ${error.message}`
-            : 'Failed to generate biography';
-
+        console.error('Error in generate-bio:', error);
         return NextResponse.json(
-            { error: errorMessage },
+            {
+                error: "Failed to generate biography",
+                details: error instanceof Error ? error.message : "Unknown error"
+            },
             { status: 500 }
         );
     }

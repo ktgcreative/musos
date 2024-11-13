@@ -50,7 +50,8 @@ export default async function Discover() {
 
     return (
         <div className="relative min-h-screen">
-
+            <div className="absolute -z-10 inset-0 bg-gradient-to-br from-black via-black/95 to-transparent" />
+            <div className="absolute -z-10 inset-0 bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10 animate-gradient-xy" />
             <div className="relative z-10 p-10 space-y-8">
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between">
