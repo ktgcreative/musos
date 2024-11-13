@@ -13,13 +13,13 @@ import { PreferencesSection } from '../(components)/users/settings/PreferencesSe
 import { ThemesSection } from '../(components)/users/settings/ThemesSection';
 
 interface Props {
-    params: Promise<{
+    params: {
         section: string;
-    }>;
+    };
 }
 
 export default function EditProfileSection({ params }: Props) {
-    const { section } = React.use(params);
+    const { section } = params;
     const activeTab = section as TabType;
 
     const [profileData, setProfileData] = useState<ProfileData>(DEFAULT_PROFILE_DATA);
