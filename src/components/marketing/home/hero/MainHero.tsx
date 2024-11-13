@@ -19,18 +19,18 @@ export function PlayfulHeroSection() {
     const ref = useRef(null);
     const isInView = useInView(ref);
     return (
-        <div ref={ref} className="relative min-h-[80rem] md:min-h-[60rem] max-h-screen w-full">
+        <div ref={ref} className="relative min-h-screen pt-10 mb-96 w-full">
             <div className="absolute inset-0">
                 <div className="absolute inset-0 bg-gradient-to-br from-black via-black/95 to-transparent" />
                 <div className="absolute inset-0 bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10 animate-gradient-xy" />
             </div>
 
-            <div className="relative z-10 grid max-h-[80rem] md:max-h-[60rem] overflow-hidden grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 max-w-8xl mx-auto px-6 md:px-12 pt-12 items-start">
-                <div className="lg:col-span-2 py-12 md:py-12 px-6 md:px-12">
+            <div className="relative z-10 grid min-h-screen grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 max-w-8xl mx-auto px-4 md:px-12 pt-8 md:pt-12 pb-8 md:pb-12 items-center">
+                <div className="lg:col-span-2 py-8 md:py-12 px-4 md:px-12">
                     <RoughNotationGroup show={isInView}>
                         <h2
                             className={cn(
-                                "text-3xl sm:text-5xl lg:text-8xl font-extrabold tracking-tight text-white text-center sm:text-left drop-shadow-lg",
+                                "text-4xl md:text-5xl lg:text-8xl font-extrabold tracking-tight text-white text-center sm:text-left drop-shadow-lg",
                                 manrope.className
                             )}
                         >
@@ -48,7 +48,7 @@ export function PlayfulHeroSection() {
                             </RoughNotation>{" "}
                             with Our Platform
                         </h2>
-                        <p className="text-zinc-200 text-base md:text-lg max-w-3xl mt-6 md:mt-12 text-center sm:text-left leading-relaxed">
+                        <p className="text-zinc-200 text-lg md:text-xl max-w-3xl mt-8 md:mt-12 text-center sm:text-left leading-relaxed">
                             Connect with top venues, expand your audience, and seamlessly manage your music career on the go. Download now to gain{" "}
                             <RoughNotation
                                 type="underline"
@@ -61,37 +61,37 @@ export function PlayfulHeroSection() {
                             to our state-of-the-art booking system.
                         </p>
                     </RoughNotationGroup>
-                    <div className="flex sm:flex-row flex-col gap-6 items-center mt-12 [perspective:800px]">
-                        <button className="px-10 py-4 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 w-full sm:w-auto font-bold text-white text-lg hover:scale-110 transition-transform shadow-lg">
+                    <div className="flex sm:flex-row flex-col gap-4 md:gap-6 items-center mt-8 md:mt-12 [perspective:800px]">
+                        <button className="px-8 md:px-10 py-4 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 w-full sm:w-auto font-bold text-white text-lg md:text-xl hover:scale-110 transition-transform shadow-lg">
                             Get the App
                         </button>
-                        <button className="text-zinc-200 hover:text-white border-purple-500 border px-10 py-4 rounded-full text-lg transition-colors duration-200">
+                        <button className="text-zinc-200 hover:text-white border-purple-500 border px-8 md:px-10 py-4 rounded-full text-lg md:text-xl w-full sm:w-auto transition-colors duration-200">
                             Watch Demo
                         </button>
                     </div>
 
-                    <div className="mt-24 animate-fade-in-up delay-500">
-                        <p className="text-sm font-semibold text-zinc-400 mb-4">
+                    <div className="mt-16 md:mt-24 animate-fade-in-up delay-500">
+                        <p className="text-sm md:text-base font-semibold text-zinc-400 mb-6">
                             INSTANTLY SYNC YOUR MUSIC FROM
                         </p>
-                        <div className="flex flex-wrap gap-10 items-center">
+                        <div className="flex flex-wrap gap-6 md:gap-10 items-center">
                             <div className="flex items-center gap-3 text-zinc-300 hover:text-green-400 transition-colors">
-                                <SiSpotify className="w-10 h-10" />
-                                <span className="text-md font-medium">Spotify</span>
+                                <SiSpotify className="w-8 h-8 md:w-10 md:h-10" />
+                                <span className="text-base md:text-lg font-medium">Spotify</span>
                             </div>
                             <div className="flex items-center gap-3 text-zinc-300 hover:text-orange-400 transition-colors">
-                                <SiSoundcloud className="w-10 h-10" />
-                                <span className="text-md font-medium">SoundCloud</span>
+                                <SiSoundcloud className="w-8 h-8 md:w-10 md:h-10" />
+                                <span className="text-base md:text-lg font-medium">SoundCloud</span>
                             </div>
                             <div className="flex items-center gap-3 text-zinc-300 hover:text-red-400 transition-colors">
-                                <SiYoutube className="w-10 h-10" />
-                                <span className="text-md font-medium">YouTube</span>
+                                <SiYoutube className="w-8 h-8 md:w-10 md:h-10" />
+                                <span className="text-base md:text-lg font-medium">YouTube</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="flex justify-end overflow-visible h-full w-full relative flex-shrink-0">
+                <div className="flex justify-center sm:justify-end h-[600px] md:h-[747px] w-full relative flex-shrink-0 mt-8 sm:mt-0">
                     <Skeleton />
                 </div>
             </div>
@@ -121,7 +121,7 @@ export const Skeleton = () => {
         if (isInView) animate(sequence);
     }, [isInView]);
     return (
-        <div ref={ref} className="relative w-[350px] h-[747px] m-auto">
+        <div ref={ref} className="relative w-[280px] md:w-[350px] h-full m-auto">
             <div
                 style={{
                     backgroundImage: `url('${SVGDataURI}')`,

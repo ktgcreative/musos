@@ -1,6 +1,6 @@
 import Navigation from '@/components/marketing/home/Navigation';
 // import Hero from '@/components/marketing/home/Hero';
-import { PlayfulHeroSection } from '@/components/marketing/home/MarketingHero';
+import { PlayfulHeroSection } from '@/components/marketing/home/hero/MainHero';
 import Pricing from '@/components/marketing/home/Pricing';
 
 export default function Home() {
