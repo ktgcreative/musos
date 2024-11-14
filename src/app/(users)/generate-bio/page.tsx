@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { MdAutoAwesome, MdPerson, MdMusicNote, MdTheaters, MdQuestionAnswer, MdAnalytics, MdTrendingUp, MdStar, MdHandshake, MdSummarize, MdAlbum, MdWorkspaces, MdBrush, MdMessage, MdPeople } from 'react-icons/md';
+import { MdAutoAwesome, MdPerson, MdMusicNote, MdTheaters, MdQuestionAnswer, MdAnalytics, MdTrendingUp, MdStar, MdHandshake, MdSummarize, MdAlbum, MdWorkspaces, MdBrush, MdMessage, MdPeople, MdLibraryBooks } from 'react-icons/md';
 import { TbTargetArrow } from 'react-icons/tb';
+import ReactMarkdown from 'react-markdown';
 
 interface Classification {
     classification: string;
@@ -60,6 +61,7 @@ export default function GenerateBioPage() {
     const [error, setError] = useState('');
     const [relatedQuestions, setRelatedQuestions] = useState<string[]>([]);
     const [classification, setClassification] = useState<Classification | null>(null);
+    const [citations, setCitations] = useState<string[]>([]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -86,6 +88,7 @@ export default function GenerateBioPage() {
             setDetailedPrompt(data.detailedPrompt);
             setRelatedQuestions(data.relatedQuestions || []);
             setClassification(data.classification);
+            setCitations(data.citations || []);
         } catch (err) {
             const errorMessage = err instanceof Error ?
                 err.message :
@@ -250,10 +253,29 @@ export default function GenerateBioPage() {
                                     <MdAutoAwesome className="w-5 h-5 text-violet-400" />
                                     Generated Biography
                                 </h2>
-                                <p className="text-[#b3b3b3] whitespace-pre-wrap leading-relaxed">
-                                    {bio}
-                                </p>
+                                <div className="prose prose-invert prose-violet max-w-none">
+                                    <ReactMarkdown>{bio}</ReactMarkdown>
+                                </div>
                             </div>
+
+                            {citations.length > 0 && (
+                                <div className="p-6 bg-[#2a2a2a] rounded-xl border border-white/10">
+                                    <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                                        <MdLibraryBooks className="w-5 h-5 text-violet-400" />
+                                        Citations
+                                    </h2>
+                                    <ul className="space-y-2">
+                                        {citations.map((citation, index) => (
+                                            <li
+                                                key={index}
+                                                className="text-[#b3b3b3] p-3 bg-[#1a1a1a] rounded-lg border border-white/5"
+                                            >
+                                                {citation}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
 
                             {classification && (
                                 <div className="p-6 bg-[#2a2a2a] rounded-xl border border-white/10">

@@ -81,6 +81,7 @@ Find information about their performances, music style, and presence in the ${lo
                 return_images: false,
                 top_k: 0,
                 stream: false,
+                return_citations: true,
                 return_related_questions: true
             })
         };
@@ -130,6 +131,7 @@ Find information about their performances, music style, and presence in the ${lo
                 bio: perplexityData.choices[0].message.content,
                 relatedQuestions: perplexityData.related_questions || [],
                 classification: gptData.classification,
+                citations: perplexityData.citations || [],
                 timestamp: new Date().toISOString()
             });
 
