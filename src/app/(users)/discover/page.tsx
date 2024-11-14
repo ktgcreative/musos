@@ -9,7 +9,7 @@ import { AppleCardsCarouselDemo } from '@/components/discover/AppleCards';
 
 // Update the data fetching functions
 async function getMusicians() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/api/musicians`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://musos.vercel.app/'}/api/musicians`, {
         next: { revalidate: 3600 }
     });
 
@@ -22,7 +22,7 @@ async function getMusicians() {
 }
 
 async function getVenues() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/api/venues`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://musos.vercel.app/'}/api/venues`, {
         next: { revalidate: 3600 }
     });
 
