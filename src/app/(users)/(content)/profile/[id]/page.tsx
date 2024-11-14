@@ -5,10 +5,11 @@ import { PiWaveform } from 'react-icons/pi';
 import Hero from '@/components/shared/Hero';
 import ErrorWithRecommended from '@/components/shared/ErrorWithRecommended';
 import { Musician } from '@/app/api/musicians/route';
+import { ExpandableCardDemo } from '@/components/shared/cardModalList';
 
 // Server-side data fetching
 async function getMusician(id: string) {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://musos.vercel.app/" || 'http://localhost:3000';
     const res = await fetch(`${baseUrl}/api/musicians?id=${id}`, {
         next: { revalidate: 3600 }
     });
@@ -129,23 +130,7 @@ export default async function Profile({ params }: Props) {
                     {/* Featured Tracks */}
                     <div className="lg:col-span-2 bg-gradient-to-br from-[#242424] to-[#1c1c1c] rounded-2xl p-6 min-h-[250px] border border-white/5">
                         <h3 className="text-xl font-bold text-white mb-4">Featured Tracks</h3>
-                        <div className="space-y-3">
-                            {musician.featuredTracks.map((track: Musician['featuredTracks'][0], index: number) => (
-                                <div key={track.name}
-                                    className="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition-colors group cursor-pointer"
-                                >
-                                    <span className="text-sm font-medium text-[#b3b3b3] w-6">{index + 1}</span>
-                                    <PiWaveform className="w-6 h-6 text-violet-400" />
-                                    <div className="flex-1">
-                                        <h4 className="text-base font-medium text-white group-hover:text-violet-400 transition-colors">
-                                            {track.name}
-                                        </h4>
-                                        <p className="text-sm text-[#b3b3b3]">{track.plays} plays</p>
-                                    </div>
-                                    <span className="text-sm text-[#b3b3b3]">{track.duration}</span>
-                                </div>
-                            ))}
-                        </div>
+                        <ExpandableCardDemo />
                     </div>
 
                     {/* Connect Section */}

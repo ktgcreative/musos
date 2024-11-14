@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { MdVerified, MdLocationOn, MdPeople, MdMusicNote } from 'react-icons/md';
 import type { Musician } from '@/app/api/musicians/route';
 import type { Venue } from '@/app/api/venues/route';
+import { AppleCardsCarouselDemo } from '@/components/discover/AppleCards';
 
 
 
@@ -52,17 +53,19 @@ export default async function Discover() {
         <div className="relative min-h-screen">
             <div className="absolute -z-10 inset-0 bg-gradient-to-br from-black via-black/95 to-transparent" />
             <div className="absolute -z-10 inset-0 bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10 animate-gradient-xy" />
-            <div className="relative z-10 p-10 space-y-8">
+            <div className="relative z-10  space-y-8">
                 {/* Header */}
-                <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between">
+                <div className="flex flex-col  p-10 sm:flex-row gap-6 items-start sm:items-center justify-between">
                     <div className="space-y-1">
                         <h1 className="text-4xl font-bold text-white">Discover</h1>
                         <p className="text-zinc-400">Find your next performance opportunity</p>
                     </div>
                 </div>
 
+                <AppleCardsCarouselDemo />
+
                 {/* Musicians Section */}
-                <div className="space-y-6">
+                <div className="space-y-6 px-5">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <div className="p-2 rounded-xl bg-violet-600/20 backdrop-blur-sm">
@@ -122,7 +125,7 @@ export default async function Discover() {
                 <div className="h-px bg-gradient-to-r from-transparent via-zinc-700/50 to-transparent" />
 
                 {/* Venues Section */}
-                <div className="space-y-6">
+                <div className="space-y-6 px-5">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <div className="p-2 rounded-xl bg-fuchsia-600/20 backdrop-blur-sm">

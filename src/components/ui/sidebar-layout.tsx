@@ -52,7 +52,7 @@ export function SidebarLayout({
   let [showSidebar, setShowSidebar] = useState(false)
 
   return (
-    <div className="relative z-50 isolate flex min-h-screen w-full">
+    <div className="relative z-50 isolate min-h-screen w-full">
       {/* Sidebar on desktop */}
       <div className="fixed inset-y-0 left-0 w-64 max-lg:hidden z-50">{sidebar}</div>
 
@@ -61,20 +61,25 @@ export function SidebarLayout({
         {sidebar}
       </MobileSidebar>
 
-      {/* Navbar on mobile */}
-      <header className="flex items-center px-4 lg:hidden">
-        <div className="py-2.5">
-          <NavbarItem onClick={() => setShowSidebar(true)} aria-label="Open navigation">
-            <OpenMenuIcon />
-          </NavbarItem>
-        </div>
-        <div className="min-w-0 flex-1">{navbar}</div>
-      </header>
+      {/* Mobile layout wrapper */}
+      <div className="flex min-h-screen flex-col lg:pl-64">
+        {/* Navbar on mobile */}
+        <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-sm dark:bg-zinc-900/80 lg:hidden">
+          <div className="flex items-center px-4">
+            <div className="py-2.5">
+              <NavbarItem onClick={() => setShowSidebar(true)} aria-label="Open navigation">
+                <OpenMenuIcon />
+              </NavbarItem>
+            </div>
+            <div className="min-w-0 flex-1">{navbar}</div>
+          </div>
+        </header>
 
-      {/* Content */}
-      <main className="flex-1 lg:pl-64">
-        {children}
-      </main>
+        {/* Content */}
+        <main className="flex-1 lg:pl-10">
+          {children}
+        </main>
+      </div>
     </div>
   )
 }

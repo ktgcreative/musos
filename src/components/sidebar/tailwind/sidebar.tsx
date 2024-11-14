@@ -64,7 +64,7 @@ export default function SidebarFull({ children }: SidebarFullProps) {
         <Suspense fallback={<LoadingPlaceholder />}>
             <SidebarLayout
                 navbar={
-                    <Navbar>
+                    <Navbar className="lg:hidden">
                         <NavbarSpacer />
                         <NavbarSection>
                             {utilityNavItems.map((item) => (
@@ -84,13 +84,13 @@ export default function SidebarFull({ children }: SidebarFullProps) {
                     </Navbar>
                 }
                 sidebar={
-                    <Sidebar>
+                    <Sidebar className="w-[280px] max-lg:w-16 transition-all duration-300">
                         <SidebarHeader>
                             <Dropdown>
                                 <DropdownButton as={SidebarItem} className="lg:mb-2.5">
                                     <Avatar src="/tailwind-logo.svg" />
-                                    <SidebarLabel>Tailwind Labs</SidebarLabel>
-                                    <ChevronDownIcon />
+                                    <SidebarLabel className="max-lg:hidden">Tailwind Labs</SidebarLabel>
+                                    <ChevronDownIcon className="max-lg:hidden" />
                                 </DropdownButton>
                                 <DropdownMenu className="min-w-80 lg:min-w-64" anchor="bottom start">
                                     <DropdownItems items={teamDropdownItems} />
@@ -110,7 +110,7 @@ export default function SidebarFull({ children }: SidebarFullProps) {
                                 {mainNavItems.map((item) => (
                                     <SidebarItem key={item.href} href={item.href}>
                                         <item.icon />
-                                        <SidebarLabel>{item.label}</SidebarLabel>
+                                        <SidebarLabel className="max-lg:hidden">{item.label}</SidebarLabel>
                                     </SidebarItem>
                                 ))}
                             </SidebarSection>
@@ -127,7 +127,7 @@ export default function SidebarFull({ children }: SidebarFullProps) {
                                 {bottomNavItems.map((item) => (
                                     <SidebarItem key={item.href} href={item.href}>
                                         <item.icon />
-                                        <SidebarLabel>{item.label}</SidebarLabel>
+                                        <SidebarLabel className="max-lg:hidden">{item.label}</SidebarLabel>
                                     </SidebarItem>
                                 ))}
                             </SidebarSection>
@@ -156,7 +156,7 @@ export default function SidebarFull({ children }: SidebarFullProps) {
                     </Sidebar>
                 }
             >
-                <div className=" min-h-screen">
+                <div className="min-h-screen ">
                     {children}
                 </div>
             </SidebarLayout>
