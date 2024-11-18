@@ -51,7 +51,7 @@ export default async function Discover() {
         <div className="relative min-h-screen">
             <div className="absolute -z-10 inset-0 bg-gradient-to-br from-black via-black/95 to-transparent" />
             <div className="absolute -z-10 inset-0 bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10 animate-gradient-xy" />
-            <div className="relative z-10  space-y-8 mt-10">
+            <div className="relative z-10  space-y-8 my-16">
 
                 <AppleCardsCarouselDemo musicians={musicians} venues={venues} />
 
@@ -116,7 +116,7 @@ export default async function Discover() {
                 <div className="h-px bg-gradient-to-r from-transparent via-zinc-700/50 to-transparent" />
 
                 {/* Venues Section */}
-                <div className="space-y-6 px-5">
+                <div className="space-y-6 mb-16 px-5">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <div className="p-2 rounded-xl bg-fuchsia-600/20 backdrop-blur-sm">

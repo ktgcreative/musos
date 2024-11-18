@@ -2,6 +2,7 @@ import Navigation from '@/components/marketing/home/Navigation';
 // import Hero from '@/components/marketing/home/Hero';
 import { PlayfulHeroSection } from '@/components/marketing/home/hero/MainHero';
 import Pricing from '@/components/marketing/home/Pricing';
+import Features from '@/components/marketing/about/Features';
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
         <Navigation />
         {/* <Hero /> */}
         <PlayfulHeroSection />
+        <Features />
         <Pricing />
       </div>
     </main>

@@ -6,6 +6,7 @@ import React, { useEffect, useRef } from "react";
 import { RoughNotation, RoughNotationGroup } from "react-rough-notation";
 import { animate, stagger, useInView } from "framer-motion";
 import { SiSpotify, SiSoundcloud, SiYoutube } from "react-icons/si";
+import { MdAutoAwesome, MdPerson, MdCategory, MdTrendingUp, MdStars, MdMusicNote, MdGroup, MdTimeline } from 'react-icons/md';
 
 const manrope = Manrope({
     subsets: ["latin"],
@@ -19,7 +20,7 @@ export function PlayfulHeroSection() {
     const ref = useRef(null);
     const isInView = useInView(ref);
     return (
-        <div ref={ref} className="relative min-h-screen pt-10 mb-96 w-full">
+        <div ref={ref} className="relative min-h-screen pt-10 w-full">
             <div className="absolute inset-0">
                 <div className="absolute inset-0 bg-gradient-to-br from-black via-black/95 to-transparent" />
                 <div className="absolute inset-0 bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10 animate-gradient-xy" />
@@ -30,11 +31,11 @@ export function PlayfulHeroSection() {
                     <RoughNotationGroup show={isInView}>
                         <h2
                             className={cn(
-                                "text-4xl md:text-5xl lg:text-8xl font-extrabold tracking-tight text-white text-center sm:text-left drop-shadow-lg",
+                                "text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white text-center sm:text-left drop-shadow-lg",
                                 manrope.className
                             )}
                         >
-                            Elevate Your Music{" "}
+                            From the Studio to the Stage:{" "}
                             <RoughNotation
                                 type="highlight"
                                 animationDuration={2500}
@@ -43,22 +44,22 @@ export function PlayfulHeroSection() {
                                 multiline
                             >
                                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 animate-gradient-x">
-                                    Experience
+                                    Your Next Big Opportunity
                                 </span>
                             </RoughNotation>{" "}
-                            with Our Platform
+                            Awaits
                         </h2>
                         <p className="text-zinc-200 text-lg md:text-xl max-w-3xl mt-8 md:mt-12 text-center sm:text-left leading-relaxed">
-                            Connect with top venues, expand your audience, and seamlessly manage your music career on the go. Download now to gain{" "}
+                            Showcase Your Talent: Create stunning profiles that put your artistry in the spotlight.{" "}
                             <RoughNotation
                                 type="underline"
                                 animationDuration={2500}
                                 iterations={3}
                                 color="#8b5cf6"
                             >
-                                exclusive early access
+                                Highlight your achievements
                             </RoughNotation>{" "}
-                            to our state-of-the-art booking system.
+                            with professional stats, feature your best tracks, and seamlessly integrate your social links. Stand out to venue owners and captivate your fans with a sleek, modern profile that's as impressive as your sound.
                         </p>
                     </RoughNotationGroup>
                     <div className="flex sm:flex-row flex-col gap-4 md:gap-6 items-center mt-8 md:mt-12 [perspective:800px]">
@@ -104,22 +105,20 @@ export const Skeleton = () => {
     const isInView = useInView(ref);
     useEffect(() => {
         const sequence = [
-            [".first", { opacity: [0, 1] }, { duration: 1, ease: "easeOut" }],
-            [".second", { opacity: [0, 1] }, { duration: 1, ease: "easeOut" }],
             [
-                ".images .image",
+                ".ai-cards .card",
                 {
                     opacity: [0, 1],
-                    rotate: [0, Math.floor(Math.random() * 10), 0],
-                    scale: [1, 1.1, 1],
+                    scale: [0.95, 1],
                 },
-                { duration: 1, ease: "easeOut", delay: stagger(0.4) },
+                { duration: 0.8, ease: "easeOut", delay: stagger(0.2) },
             ],
         ];
 
         //@ts-expect-error - Framer Motion types are not fully compatible
         if (isInView) animate(sequence);
     }, [isInView]);
+
     return (
         <div ref={ref} className="relative w-[280px] md:w-[350px] h-full m-auto">
             <div
@@ -131,42 +130,91 @@ export const Skeleton = () => {
                 }}
                 className="absolute inset-0 mx-auto w-full h-full dark:filter dark:invert"
             />
-            <div className="px-8 mt-20 flex flex-col gap-6 relative z-20">
-                <div className="first opacity-0 text-sm text-white p-3 bg-purple-600/20 backdrop-blur-sm rounded-lg shadow-md">
-                    Show me available venues for next Saturday night
-                </div>
-                <div className="second opacity-0 text-sm text-white p-3 bg-purple-600/20 backdrop-blur-sm rounded-lg shadow-md">
-                    Here are the top venues matching your genre and availability
-                </div>
-                <div className="images grid grid-cols-2 gap-3">
-                    <Image
-                        src="https://images.unsplash.com/photo-1483683804023-6ccdb62f86ef?q=80&w=2992&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                        alt="venue 1"
-                        height="200"
-                        width="200"
-                        className="h-full opacity-0 rounded-xl w-full max-h-[150px] object-cover image shadow-lg"
-                    />
-                    <Image
-                        src="https://images.unsplash.com/photo-1509233725247-49e657c54213?q=80&w=3449&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                        alt="venue 2"
-                        height="200"
-                        width="200"
-                        className="h-full opacity-0 rounded-xl w-full max-h-[150px] object-cover image shadow-lg"
-                    />
-                    <Image
-                        src="https://images.unsplash.com/photo-1473116763249-2faaef81ccda?q=80&w=3592&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                        alt="venue 3"
-                        height="200"
-                        width="200"
-                        className="h-full opacity-0 rounded-xl w-full max-h-[150px] object-cover image shadow-lg"
-                    />
-                    <Image
-                        src="https://images.unsplash.com/photo-1505142468610-359e7d316be0?q=80&w=3070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                        alt="venue 4"
-                        height="200"
-                        width="200"
-                        className="h-full opacity-0 rounded-xl w-full max-h-[150px] object-cover image shadow-lg"
-                    />
+            <div className="px-6 mt-20 flex flex-col gap-4 relative z-20">
+                <div className="ai-cards grid grid-cols-2 gap-3">
+                    {/* Career Stage */}
+                    <div className="card opacity-0 col-span-2 p-4 bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 backdrop-blur-sm rounded-xl border border-white/10">
+                        <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2">
+                                <MdTimeline className="w-4 h-4 text-violet-400" />
+                                <span className="text-xs text-violet-300">Career Stage</span>
+                            </div>
+                            <span className="text-[10px] px-2 py-1 bg-violet-500/30 rounded-full text-white">Rising Star</span>
+                        </div>
+                        <div className="mt-2 flex gap-1">
+                            <div className="h-1 flex-1 bg-violet-500 rounded-full" />
+                            <div className="h-1 flex-1 bg-violet-500 rounded-full" />
+                            <div className="h-1 flex-1 bg-violet-500 rounded-full" />
+                            <div className="h-1 flex-1 bg-violet-900/50 rounded-full" />
+                            <div className="h-1 flex-1 bg-violet-900/50 rounded-full" />
+                        </div>
+                    </div>
+
+                    {/* Genre Analysis */}
+                    <div className="card opacity-0 p-4 bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 backdrop-blur-sm rounded-xl border border-white/10">
+                        <div className="flex items-center gap-2 mb-2">
+                            <MdMusicNote className="w-4 h-4 text-violet-400" />
+                            <span className="text-xs text-violet-300">Genre Mix</span>
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                            <span className="text-[10px] px-2 py-1 bg-violet-500/30 rounded-full text-white">Electronic 70%</span>
+                            <span className="text-[10px] px-2 py-1 bg-violet-500/30 rounded-full text-white">Pop 30%</span>
+                        </div>
+                    </div>
+
+                    {/* Market Trend */}
+                    <div className="card opacity-0 p-4 bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 backdrop-blur-sm rounded-xl border border-white/10">
+                        <div className="flex items-center gap-2 mb-2">
+                            <MdTrendingUp className="w-4 h-4 text-violet-400" />
+                            <span className="text-xs text-violet-300">Trend</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <div className="flex-1 h-1.5 bg-violet-900/50 rounded-full overflow-hidden">
+                                <div className="h-full w-4/5 bg-violet-500 rounded-full" />
+                            </div>
+                            <span className="text-[10px] text-white">80%</span>
+                        </div>
+                    </div>
+
+                    {/* Audience Reach */}
+                    <div className="card opacity-0 col-span-2 p-4 bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 backdrop-blur-sm rounded-xl border border-white/10">
+                        <div className="flex items-center gap-2 mb-2">
+                            <MdGroup className="w-4 h-4 text-violet-400" />
+                            <span className="text-xs text-violet-300">Audience</span>
+                        </div>
+                        <div className="grid grid-cols-3 gap-1">
+                            <span className="text-[10px] px-2 py-1 bg-violet-500/30 rounded-full text-white text-center">18-24</span>
+                            <span className="text-[10px] px-2 py-1 bg-violet-500/30 rounded-full text-white text-center">Urban</span>
+                            <span className="text-[10px] px-2 py-1 bg-violet-500/30 rounded-full text-white text-center">Digital</span>
+                        </div>
+                    </div>
+
+                    {/* Performance Style */}
+                    <div className="card opacity-0 p-4 bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 backdrop-blur-sm rounded-xl border border-white/10">
+                        <div className="flex items-center gap-2 mb-2">
+                            <MdStars className="w-4 h-4 text-violet-400" />
+                            <span className="text-xs text-violet-300">Style</span>
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                            <span className="text-[10px] px-2 py-1 bg-violet-500/30 rounded-full text-white">High Energy</span>
+                        </div>
+                    </div>
+
+                    {/* Brand Strength */}
+                    <div className="card opacity-0 p-4 bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 backdrop-blur-sm rounded-xl border border-white/10">
+                        <div className="flex items-center gap-2 mb-2">
+                            <MdAutoAwesome className="w-4 h-4 text-violet-400" />
+                            <span className="text-xs text-violet-300">Brand</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                            {[1, 2, 3, 4].map((i) => (
+                                <div
+                                    key={i}
+                                    className={`h-1.5 flex-1 rounded-full ${i <= 3 ? 'bg-violet-500' : 'bg-violet-900/50'}`}
+                                />
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
