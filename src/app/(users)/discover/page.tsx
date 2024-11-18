@@ -9,16 +9,17 @@ import { AppleCardsCarouselDemo } from '@/components/discover/AppleCards';
 
 // Update the data fetching functions
 async function getMusicians() {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://musos.vercel.app/'}/api/musicians`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://musos.io/'}/api/musicians`, {
         next: { revalidate: 3600 }
     });
 
     if (!res.ok) {
         console.error('Failed to fetch musicians');
-        return { musicians: [] };
+        return [];
     }
 
-    return res.json();
+    const data = await res.json();
+    return data;
 }
 
 async function getVenues() {
@@ -28,41 +29,31 @@ async function getVenues() {
 
     if (!res.ok) {
         console.error('Failed to fetch venues');
-        return { venues: [] };
+        return [];
     }
 
-    return res.json();
+    const data = await res.json();
+    return data;
 }
 
 export default async function Discover() {
-    // Add error handling for the Promise.all
     let musicians = [];
     let venues = [];
 
     try {
-        [musicians, venues] = await Promise.all([
-            getMusicians(),
-            getVenues()
-        ]);
+        musicians = await getMusicians();
+        venues = await getVenues();
     } catch (error) {
         console.error('Error fetching data:', error);
-        // Continue with empty arrays if fetch fails
     }
 
     return (
         <div className="relative min-h-screen">
             <div className="absolute -z-10 inset-0 bg-gradient-to-br from-black via-black/95 to-transparent" />
             <div className="absolute -z-10 inset-0 bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10 animate-gradient-xy" />
-            <div className="relative z-10  space-y-8">
-                {/* Header */}
-                <div className="flex flex-col  p-10 sm:flex-row gap-6 items-start sm:items-center justify-between">
-                    <div className="space-y-1">
-                        <h1 className="text-4xl font-bold text-white">Discover</h1>
-                        <p className="text-zinc-400">Find your next performance opportunity</p>
-                    </div>
-                </div>
+            <div className="relative z-10  space-y-8 mt-10">
 
-                <AppleCardsCarouselDemo />
+                <AppleCardsCarouselDemo musicians={musicians} venues={venues} />
 
                 {/* Musicians Section */}
                 <div className="space-y-6 px-5">
@@ -73,7 +64,7 @@ export default async function Discover() {
                             </div>
                             <div>
                                 <h2 className="text-2xl font-bold text-white">Musicians</h2>
-                                <p className="text-sm text-zinc-400">{musicians.length} artists</p>
+                                <p className="text-sm text-zinc-400">{musicians?.length || 0} artists</p>
                             </div>
                         </div>
                         <Link
@@ -84,7 +75,7 @@ export default async function Discover() {
                         </Link>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {musicians.slice(0, 8).map((musician: Musician) => (
+                        {musicians?.slice(0, 8).map((musician: Musician) => (
                             <Link
                                 href={`/profile/${musician.id}`}
                                 key={musician.id}
