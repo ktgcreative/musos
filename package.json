@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "knip": "knip",
+    "knip:fix": "knip --fix",
+    "knip:production": "knip --production"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
@@ -16,24 +19,30 @@
     "@tailwindcss/typography": "^0.5.15",
     "clsx": "^2.1.1",
     "framer-motion": "^10.18.0",
-    "next": "^14.2.17",
+    "next": "15.3.3",
     "openai": "^4.71.1",
     "qss": "^3.0.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
     "react-icons": "^5.3.0",
     "react-markdown": "^9.0.1",
     "react-rough-notation": "^1.0.5",
     "tailwind-merge": "^2.5.4"
   },
   "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/node": "20.17.57",
+    "@types/react": "19.1.6",
+    "@types/react-dom": "19.1.6",
     "eslint": "^8",
-    "eslint-config-next": "14.2.0",
+    "eslint-config-next": "15.3.3",
+    "knip": "^5.60.0",
     "postcss": "^8",
+    "postcss-load-config": "^6.0.1",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "typescript": "5.8.3"
+  },
+  "overrides": {
+    "@types/react": "19.1.6",
+    "@types/react-dom": "19.1.6"
   }
 }
