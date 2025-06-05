@@ -1,8 +1,8 @@
 import React from 'react';
 import {
-    MdAutoAwesome, MdStar, MdTheaters, MdHandshake, MdAlbum, MdAnalytics,
+    MdAutoAwesome, MdStar, MdTheaters, MdAlbum, MdAnalytics,
     MdLibraryBooks, MdMessage, MdPeople, MdPerson, MdQuestionAnswer,
-    MdSummarize, MdWorkspaces, MdBrush, MdTrendingUp
+    MdSummarize, MdBrush, MdTrendingUp
 } from 'react-icons/md';
 import { TbTargetArrow } from 'react-icons/tb';
 import ReactMarkdown from 'react-markdown';
@@ -25,7 +25,7 @@ const BentoGridItem = ({ children, className = '', colSpan = '', rowSpan = '' }:
     rowSpan?: string;
 }) => (
     <div className={`
-        p-6 bg-[#2a2a2a] rounded-xl border border-white/10
+        p-6 bg-[#2a2a2a]/70 backdrop-blur-sm rounded-xl border border-white/10
         transition-all duration-300 ease-in-out hover:scale-[1.02]
         hover:shadow-[0_0_20px_rgba(139,92,246,0.15)]
         ${colSpan} ${rowSpan} ${className}
@@ -69,7 +69,7 @@ export function AiOutputDisplay({
                     </BentoGridItem>
 
                     {/* Generated Biography */}
-                    <BentoGridItem colSpan="md:col-span-3" className="bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a]">
+                    <BentoGridItem colSpan="md:col-span-3" >
                         <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                             <MdAutoAwesome className="w-5 h-5 text-violet-400" />
                             Generated Biography
@@ -139,24 +139,6 @@ export function AiOutputDisplay({
                                 </div>
                             </BentoGridItem>
 
-                            {/* Commercial Potential */}
-                            <BentoGridItem>
-                                <h3 className="text-violet-400 font-medium mb-3">Commercial Potential</h3>
-                                <p className="text-white capitalize mb-3">{classification.commercial_potential}</p>
-                                <div className="space-y-2">
-                                    <div className="h-2 bg-[#1a1a1a] rounded-full overflow-hidden">
-                                        <div
-                                            className="h-full bg-gradient-to-r from-violet-500 to-fuchsia-500"
-                                            style={{
-                                                width: `${classification.genre_authenticity * 100}%`
-                                            }}
-                                        />
-                                    </div>
-                                    <p className="text-sm text-[#b3b3b3]">
-                                        Genre Authenticity: {Math.round(classification.genre_authenticity * 100)}%
-                                    </p>
-                                </div>
-                            </BentoGridItem>
 
                             {/* Brand Identity */}
                             <BentoGridItem colSpan="md:col-span-3">
@@ -224,7 +206,7 @@ export function AiOutputDisplay({
                             </BentoGridItem>
 
                             {/* Known Songs */}
-                            <BentoGridItem colSpan="md:col-span-2">
+                            <BentoGridItem colSpan="md:col-span-3">
                                 <h3 className="text-violet-400 font-medium mb-4 flex items-center gap-2">
                                     <MdAlbum className="w-4 h-4" />
                                     Known Songs
@@ -244,7 +226,7 @@ export function AiOutputDisplay({
                             </BentoGridItem>
 
                             {/* Target Audience */}
-                            <BentoGridItem>
+                            <BentoGridItem colSpan="md:col-span-3">
                                 <h3 className="text-violet-400 font-medium mb-2 flex items-center gap-2">
                                     <TbTargetArrow className="w-4 h-4" />
                                     Target Audience
@@ -262,7 +244,7 @@ export function AiOutputDisplay({
                             </BentoGridItem>
 
                             {/* Performance Style */}
-                            <BentoGridItem colSpan="md:col-span-2">
+                            <BentoGridItem colSpan="md:col-span-3">
                                 <h3 className="text-violet-400 font-medium mb-3 flex items-center gap-2">
                                     <MdTheaters className="w-4 h-4" />
                                     Performance Style
@@ -282,7 +264,7 @@ export function AiOutputDisplay({
                             </BentoGridItem>
 
                             {/* Profile Tags */}
-                            <BentoGridItem>
+                            <BentoGridItem colSpan="md:col-span-3">
                                 <h3 className="text-violet-400 font-medium mb-3 flex items-center gap-2">
                                     <MdPerson className="w-4 h-4" />
                                     Profile Tags
@@ -302,7 +284,7 @@ export function AiOutputDisplay({
                             </BentoGridItem>
 
                             {/* Unique Selling Points */}
-                            <BentoGridItem colSpan="md:col-span-2">
+                            <BentoGridItem colSpan="md:col-span-3">
                                 <h3 className="text-violet-400 font-medium mb-2 flex items-center gap-2">
                                     <MdStar className="w-4 h-4" />
                                     Unique Selling Points
@@ -314,39 +296,8 @@ export function AiOutputDisplay({
                                 </ul>
                             </BentoGridItem>
 
-                            {/* Development Areas */}
-                            <BentoGridItem>
-                                <h3 className="text-violet-400 font-medium mb-2 flex items-center gap-2">
-                                    <MdWorkspaces className="w-4 h-4" />
-                                    Development Areas
-                                </h3>
-                                <ul className="list-disc list-inside space-y-1">
-                                    {classification.development_areas.map((area, index) => (
-                                        <li key={index} className="text-[#b3b3b3]">{area}</li>
-                                    ))}
-                                </ul>
-                            </BentoGridItem>
 
-                            {/* Collaboration Potential */}
-                            <BentoGridItem colSpan="md:col-span-2">
-                                <h3 className="text-violet-400 font-medium mb-2 flex items-center gap-2">
-                                    <MdHandshake className="w-4 h-4" />
-                                    Collaboration Potential
-                                </h3>
-                                <div className="flex flex-wrap gap-2">
-                                    {(Array.isArray(classification.collaboration_potential) ?
-                                        classification.collaboration_potential :
-                                        [classification.collaboration_potential]
-                                    ).map((collab, index) => (
-                                        <span
-                                            key={index}
-                                            className="px-3 py-1 bg-violet-500/20 text-violet-300 rounded-full text-sm"
-                                        >
-                                            {collab}
-                                        </span>
-                                    ))}
-                                </div>
-                            </BentoGridItem>
+
 
                             {/* Analysis Summary */}
                             <BentoGridItem colSpan="md:col-span-3">

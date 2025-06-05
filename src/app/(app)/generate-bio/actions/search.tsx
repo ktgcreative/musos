@@ -14,29 +14,6 @@ const musicianSearchSchema = z.object({
     achievements: z.string().optional().describe("Notable achievements or accomplishments"),
 });
 
-async function fetchWithRetry(url: string, options: RequestInit, maxRetries = 3) {
-    for (let i = 0; i < maxRetries; i++) {
-        try {
-            const response = await fetch(url, {
-                ...options,
-                signal: AbortSignal.timeout(15000) // 15 second timeout
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            return response;
-        } catch (error) {
-            if (i === maxRetries - 1) throw error;
-
-            // Wait before retrying (exponential backoff)
-            await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
-            console.log(`Retrying API call, attempt ${i + 2} of ${maxRetries}`);
-        }
-    }
-}
-
 export const musicianSearchTool = tool({
     description: 'Search for information about a musician using Perplexity AI and classify them',
     parameters: musicianSearchSchema,
@@ -83,31 +60,6 @@ Find information about their performances, music style, and presence in the ${lo
                 },
             });
 
-            // Get classifications using the classification tool
-            let classification = null;
-            try {
-                const classificationResponse = await fetchWithRetry(
-                    `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/classify-musician`,
-                    {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            bioText: text
-                        }),
-                    }
-                );
-
-                if (classificationResponse) {
-                    const classificationData = await classificationResponse.json();
-                    classification = classificationData.classification;
-                }
-            } catch (classificationError) {
-                console.error('Classification error:', classificationError);
-                // Continue without classification if it fails
-            }
-
             // Extract usage metadata and citations from provider metadata
             const usage = providerMetadata?.perplexity?.usage || {};
             const citations = sources || [];
@@ -117,7 +69,7 @@ Find information about their performances, music style, and presence in the ${lo
                 detailedPrompt,
                 bio: text,
                 relatedQuestions: [], // Perplexity doesn't provide related questions in the current API
-                classification,
+                classification: null, // Classification is now handled in the Server Action
                 citations,
                 sources: citations, // Include sources as well for backward compatibility
                 usage, // Include usage metrics (citationTokens, numSearchQueries)

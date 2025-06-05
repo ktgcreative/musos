@@ -3,56 +3,36 @@
 import { useState } from 'react';
 import { BioGeneratorForm } from './components/BioGeneratorForm';
 import { AiOutputDisplay } from './components/AiOutputDisplay';
+import { generateBioAction } from './actions/generate-bio';
+import { Classification } from './types';
 
-interface Classification {
-    classification: string;
-    career_stage: string;
-    key_strengths: string[];
-    market_position: {
-        local_scene: string;
-        broader_market: string;
-    };
-    commercial_potential: string;
-    genre_authenticity: number;
-    unique_selling_points: string[];
-    development_areas: string[];
-    target_audience: string[];
-    collaboration_potential: string;
-    reason: string;
-    known_songs: {
-        title: string;
-        year: string;
-        popularity: 'underground' | 'local_hit' | 'regional_hit' | 'major_hit';
-    }[];
-    tags: string[];
-    performance_style: string[];
-    brand_identity: {
-        visual_aesthetic: string;
-        core_message: string;
-        audience_connection: 'minimal' | 'developing' | 'strong' | 'exceptional';
-    };
-    market_trends: {
-        trend: string;
-        relevance: 'low' | 'medium' | 'high';
-    }[];
+interface FormData {
+    stageName: string;
+    realName: string;
+    genre: string;
+    instruments: string[];
+    location: string;
+    ensembleType: string;
+    venues: string;
+    achievements: string;
+    yearsActive: string;
+    influences: string;
 }
 
 export default function GenerateBioPage() {
-    const [formData, setFormData] = useState({
-        stageName: 'Happy The Singing Dog',
+    const [formData, setFormData] = useState<FormData>({
+        stageName: '',
         realName: '',
-        musicianName: '',
-        genre: 'Busking, Acoustic,pop',
-        instruments: 'Guitar, Singing Dog',
-        location: 'Queenstown, New Zealand',
+        genre: '',
+        instruments: [],
+        location: '',
+        ensembleType: '',
         venues: '',
-        yearsActive: '10+',
         achievements: '',
-        notablePerformances: '',
-        socialMedia: '',
-        influences: '',
-        education: ''
+        yearsActive: '',
+        influences: ''
     });
+
     const [bio, setBio] = useState('');
     const [searchPrompt, setSearchPrompt] = useState('');
     const [detailedPrompt, setDetailedPrompt] = useState('');
@@ -64,46 +44,74 @@ export default function GenerateBioPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Basic validation
+        if (!formData.stageName.trim()) {
+            setError('Stage name is required');
+            return;
+        }
+        if (!formData.genre.trim()) {
+            setError('Genre is required');
+            return;
+        }
+        if (formData.instruments.length === 0) {
+            setError('Please select at least one instrument');
+            return;
+        }
+
         setLoading(true);
         setError('');
 
         try {
-            const response = await fetch('/api/generate-bio', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
+            // Prepare data for the action
+            const actionData = {
+                stageName: formData.stageName.trim(),
+                realName: formData.realName.trim(),
+                genre: formData.genre.trim(),
+                instruments: formData.instruments.join(', '),
+                location: formData.location.trim(),
+                ensembleType: formData.ensembleType,
+                venues: formData.venues.trim(),
+                achievements: formData.achievements.trim(),
+                yearsActive: formData.yearsActive.trim(),
+                influences: formData.influences.trim()
+            };
 
-            const data = await response.json();
+            const result = await generateBioAction(actionData);
 
-            if (!response.ok) {
-                throw new Error(data.error || 'Failed to generate bio');
+            if (!result.success) {
+                throw new Error(result.error || 'Failed to generate bio');
             }
 
-            setBio(data.bio);
-            setSearchPrompt(data.searchPrompt);
-            setDetailedPrompt(data.detailedPrompt);
-            setRelatedQuestions(data.relatedQuestions || []);
-            setClassification(data.classification);
-            setCitations(data.citations || []);
+            setBio(result.bio || '');
+            setSearchPrompt(result.searchPrompt || '');
+            setDetailedPrompt(result.detailedPrompt || '');
+            setRelatedQuestions(result.relatedQuestions || []);
+            setClassification(result.classification || null);
+            setCitations(result.citations?.map(citation =>
+                typeof citation === 'string' ? citation : citation.url || citation.title || ''
+            ) || []);
         } catch (err) {
-            const errorMessage = err instanceof Error ?
-                err.message :
-                typeof err === 'object' && err && 'details' in err ?
-                    String(err.details) :
-                    'Something went wrong';
+            const errorMessage = err instanceof Error ? err.message : 'Something went wrong';
             setError(errorMessage);
         } finally {
             setLoading(false);
         }
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setFormData(prev => ({
             ...prev,
             [e.target.name]: e.target.value
+        }));
+    };
+
+    const handleInstrumentToggle = (instrument: string) => {
+        setFormData(prev => ({
+            ...prev,
+            instruments: prev.instruments.includes(instrument)
+                ? prev.instruments.filter(i => i !== instrument)
+                : [...prev.instruments, instrument]
         }));
     };
 
@@ -113,7 +121,7 @@ export default function GenerateBioPage() {
                 {/* Header Section */}
                 <div className="bg-gradient-to-br from-violet-600/20 to-fuchsia-600/20 rounded-2xl p-8 mb-8 border border-white/5">
                     <h1 className="text-4xl font-bold text-white mb-2">AI Bio Generator</h1>
-                    <p className="text-[#b3b3b3]">Create a professional biography for your music profile with detailed information about your career</p>
+                    <p className="text-[#b3b3b3]">Create a professional biography for your music profile with AI-powered research</p>
                 </div>
 
                 <div className="bg-gradient-to-br from-[#1c1c1c] to-[#242424] rounded-2xl p-8 border border-white/5 shadow-xl">
@@ -122,6 +130,7 @@ export default function GenerateBioPage() {
                         loading={loading}
                         handleSubmit={handleSubmit}
                         handleChange={handleChange}
+                        handleInstrumentToggle={handleInstrumentToggle}
                     />
 
                     {error && (
