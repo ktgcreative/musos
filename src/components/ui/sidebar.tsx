@@ -2,7 +2,7 @@
 
 import * as Headless from '@headlessui/react'
 import clsx from 'clsx'
-import { LayoutGroup, motion } from 'framer-motion'
+import { LayoutGroup, motion } from 'motion/react'
 import React, { forwardRef, useId } from 'react'
 import { TouchTarget } from './button'
 import { Link } from './link'
@@ -48,7 +48,7 @@ export function SidebarFooter({ className, ...props }: React.ComponentPropsWitho
 }
 
 export function SidebarSection({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
-  let id = useId()
+  const id = useId()
 
   return (
     <LayoutGroup id={id}>
@@ -83,7 +83,7 @@ export const SidebarItem = forwardRef(function SidebarItem(
   ),
   ref: React.ForwardedRef<HTMLAnchorElement | HTMLButtonElement>
 ) {
-  let classes = clsx(
+  const classes = clsx(
     // Base
     'flex w-full items-center gap-3 rounded-lg px-2 py-2.5 text-left text-base/6 font-medium text-zinc-950 sm:py-2 sm:text-sm/5',
     // Leading icon/icon-only
@@ -110,7 +110,15 @@ export const SidebarItem = forwardRef(function SidebarItem(
       {current && (
         <motion.span
           layoutId="current-indicator"
-          className="absolute inset-y-2 -left-4 w-0.5 rounded-full bg-zinc-950 dark:bg-white"
+          style={{
+            position: 'absolute',
+            inset: '2px',
+            left: '-4px',
+            width: '0.5rem',
+            height: '0.5rem',
+            borderRadius: '0.25rem',
+            backgroundColor: 'var(--color-zinc-950)',
+          }}
         />
       )}
       {'href' in props ? (

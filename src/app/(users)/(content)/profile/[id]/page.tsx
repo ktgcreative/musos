@@ -1,15 +1,13 @@
 import Image from 'next/image';
 import { MdTrendingUp } from 'react-icons/md';
 import { FaSpotify, FaYoutube, FaSoundcloud, FaInstagram, FaHeart, FaPlay } from 'react-icons/fa';
-import { PiWaveform } from 'react-icons/pi';
 import Hero from '@/components/shared/Hero';
 import ErrorWithRecommended from '@/components/shared/ErrorWithRecommended';
-import { Musician } from '@/app/api/musicians/route';
 import { ExpandableCardDemo } from '@/components/shared/cardModalList';
 
 // Server-side data fetching
 async function getMusician(id: string) {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://musos.vercel.app/" || 'http://localhost:3000';
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://musos.io" || 'http://localhost:3000';
     const res = await fetch(`${baseUrl}/api/musicians?id=${id}`, {
         next: { revalidate: 3600 }
     });
@@ -31,11 +29,12 @@ const LatestReleaseImage = ({ src, alt }: { src: string; alt: string }) => (
 );
 
 type Props = {
-    params: { id: string }
+    params: Promise<{ id: string }>
 }
 
 export default async function Profile({ params }: Props) {
-    const musician = await getMusician(params.id);
+    const { id } = await params;
+    const musician = await getMusician(id);
 
     if (!musician) {
         return <ErrorWithRecommended />;
@@ -55,7 +54,7 @@ export default async function Profile({ params }: Props) {
     ];
 
     return (
-        <main className="flex-1 bg-gradient-to-b from-[#0f0f0f] via-[#1a1a1a] to-[#0f0f0f] min-h-screen p-4 sm:p-6 lg:p-8 overflow-y-auto">
+        <main className="flex-1 min-h-screen p-4 sm:p-6 lg:p-8 overflow-y-auto">
             <div className="max-w-7xl mx-auto space-y-6">
                 <Hero
                     name={musician.name}

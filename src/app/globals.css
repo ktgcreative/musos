@@ -101,11 +101,11 @@ main {
 }
 
 /* Responsive font sizes */
-@responsive {
+/* @responsive {
   .text-dynamic {
     font-size: clamp(1rem, 2.5vw, 1.5rem);
   }
-}
+} */
 
 /* Loading animation */
 @keyframes loadingWave {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useParams } from 'next/navigation';
 import * as React from 'react';
 import { themes } from '@/config/themes';
 import { DEFAULT_PROFILE_DATA } from '@/data/profileDefaults';
@@ -12,14 +13,9 @@ import { EventsSection } from '../(components)/users/settings/EventsSection';
 import { PreferencesSection } from '../(components)/users/settings/PreferencesSection';
 import { ThemesSection } from '../(components)/users/settings/ThemesSection';
 
-interface Props {
-    params: {
-        section: string;
-    };
-}
-
-export default function EditProfileSection({ params }: Props) {
-    const { section } = params;
+export default function EditProfileSection() {
+    const params = useParams();
+    const section = params.section as string;
     const activeTab = section as TabType;
 
     const [profileData, setProfileData] = useState<ProfileData>(DEFAULT_PROFILE_DATA);

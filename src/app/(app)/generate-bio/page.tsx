@@ -1,11 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { MdAutoAwesome, MdStar, MdTheaters, MdHandshake, MdAlbum, MdAnalytics, MdLibraryBooks, MdMessage, MdPeople, MdPerson, MdQuestionAnswer, MdSummarize, MdWorkspaces, MdBrush, MdTrendingUp } from 'react-icons/md';
 import { BioGeneratorForm } from './components/BioGeneratorForm';
-import ReactMarkdown from 'react-markdown';
-import { LinkPreview } from '@/components/ui/LinkPreview';
-import { TbTargetArrow } from 'react-icons/tb';
 import { AiOutputDisplay } from './components/AiOutputDisplay';
 
 interface Classification {

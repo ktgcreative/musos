@@ -3,6 +3,7 @@ import { Avatar } from "@/components/ui/avatar";
 
 interface DropdownItemType {
     href?: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     icon?: any;
     label?: string;
     isDivider?: boolean;

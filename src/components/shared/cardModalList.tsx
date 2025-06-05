@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect, useId, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import React, { RefObject, useEffect, useId, useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 
 export function ExpandableCardDemo() {
@@ -28,7 +28,7 @@ export function ExpandableCardDemo() {
         return () => window.removeEventListener("keydown", onKeyDown);
     }, [active]);
 
-    useOutsideClick(ref, () => setActive(null));
+    useOutsideClick(ref as RefObject<HTMLDivElement>, () => setActive(null));
 
     return (
         <>
@@ -126,7 +126,7 @@ export function ExpandableCardDemo() {
                 ) : null}
             </AnimatePresence>
             <ul className="max-w-2xl mx-auto w-full gap-4">
-                {cards.map((card, index) => (
+                {cards.map((card) => (
                     <motion.div
                         layoutId={`card-${card.title}-${id}`}
                         key={`card-${card.title}-${id}`}
@@ -221,16 +221,6 @@ const cards = [
                     often explore themes of tragic romance, glamour, and melancholia,
                     drawing inspiration from both contemporary and vintage pop culture.
                     With a career that has seen numerous critically acclaimed albums, Lana
-
-
-                    1 of 1 error
-                    Next.js (14.2.17) is outdated (learn more)
-
-                    Unhandled Runtime Error
-                    Error: Invalid src prop (https://assets.aceternity.com/demos/lana-del-rey.jpeg) on `next/image`, hostname "assets.aceternity.com" is not configured under images in your `next.config.js`
-                    See more info: https://nextjs.org/docs/messages/next-image-unconfigured-host          Del Rey has established herself as a unique and influential figure in
-                    the music industry, earning a dedicated fan base and numerous
-                    accolades.
                 </p>
             );
         },

@@ -49,7 +49,7 @@ export function SidebarLayout({
   sidebar,
   children,
 }: React.PropsWithChildren<{ navbar: React.ReactNode; sidebar: React.ReactNode }>) {
-  let [showSidebar, setShowSidebar] = useState(false)
+  const [showSidebar, setShowSidebar] = useState(false)
 
   return (
     <div className="relative z-50 isolate min-h-screen w-full">

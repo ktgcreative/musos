@@ -1,12 +1,11 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { Manrope } from "next/font/google";
-import Image from "next/image";
 import React, { useEffect, useRef } from "react";
 import { RoughNotation, RoughNotationGroup } from "react-rough-notation";
-import { animate, stagger, useInView } from "framer-motion";
+import { animate, stagger, useInView } from "motion/react";
 import { SiSpotify, SiSoundcloud, SiYoutube } from "react-icons/si";
-import { MdAutoAwesome, MdPerson, MdCategory, MdTrendingUp, MdStars, MdMusicNote, MdGroup, MdTimeline } from 'react-icons/md';
+import { MdAutoAwesome, MdTrendingUp, MdStars, MdMusicNote, MdGroup, MdTimeline } from 'react-icons/md';
 
 const manrope = Manrope({
     subsets: ["latin"],
@@ -59,7 +58,7 @@ export function PlayfulHeroSection() {
                             >
                                 Highlight your achievements
                             </RoughNotation>{" "}
-                            with professional stats, feature your best tracks, and seamlessly integrate your social links. Stand out to venue owners and captivate your fans with a sleek, modern profile that's as impressive as your sound.
+                            with professional stats, feature your best tracks, and seamlessly integrate your social links. Stand out to venue owners and captivate your fans with a sleek, modern profile that&apos;s as impressive as your sound.
                         </p>
                     </RoughNotationGroup>
                     <div className="flex sm:flex-row flex-col gap-4 md:gap-6 items-center mt-8 md:mt-12 [perspective:800px]">
